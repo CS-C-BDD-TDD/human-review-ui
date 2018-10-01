@@ -16,7 +16,6 @@ pipeline {
     environment {
         PROJECT_NAME = 'human-review'
         KUBERNETES_NAMESPACE = "${ciProject}"
-        JAVA_TOOL_OPTIONS=""
     }
     stages {
         stage('Setup') {
@@ -70,7 +69,7 @@ pipeline {
             steps {
                 script {
                     withSonarQubeEnv('sonar') {
-                        sh './sonar-scanner/bin/sonar-scanner '
+                        sh 'unset JAVA_TOOL_OPTIONS; ./sonar-scanner/bin/sonar-scanner '
                     }
                     def qualitygate = waitForQualityGate()
                     if (qualitygate.status != "OK") {
