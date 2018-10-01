@@ -14,7 +14,7 @@ pipeline {
         label 'jenkins-slave-npm'
     }
     environment {
-        PROJECT_NAME = 'human-review'
+        PROJECT_NAME = 'human-review-ui'
         KUBERNETES_NAMESPACE = "${ciProject}"
     }
     stages {
