@@ -20,11 +20,11 @@ pipeline {
     stages {
         stage('Quality And Security') {
             parallel {
-                stage('Dependency Check') {
-                    steps {
-                        sh 'npm audit'
-                    }
-                }
+//                stage('Dependency Check') {
+//                    steps {
+//                        sh 'npm audit'
+//                    }
+//                }
                 stage('Compile & Test') {
                     steps {
                         sh 'npm install'
