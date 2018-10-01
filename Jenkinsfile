@@ -27,6 +27,7 @@ pipeline {
                 }
                 stage('Compile & Test') {
                     steps {
+                        sh 'npm install'
                         sh 'npm run build'
                     }
                 }
