@@ -82,7 +82,7 @@ pipeline {
             steps {
                 script {
                     openshift.withCluster() {
-                        openshift.withProject($ciProject) {
+                        openshift.withProject(ciProject) {
                             openshift.selector('bc', PROJECT_NAME).startBuild("--from-dir=dist/", '--wait')
                         }
                     }
@@ -93,7 +93,7 @@ pipeline {
             steps {
                 script {
                     openshift.withCluster() {
-                        openshift.withProject($ciProject) {
+                        openshift.withProject(ciProject) {
                             openshift.tag("${PROJECT_NAME}:latest", "${testProject}/${PROJECT_NAME}:latest")
                         }
                     }
@@ -108,7 +108,7 @@ pipeline {
             steps {
                 script {
                     openshift.withCluster() {
-                        openshift.withProject($ciProject) {
+                        openshift.withProject(ciProject) {
                             openshift.tag("${PROJECT_NAME}:latest", "${devProject}/${PROJECT_NAME}:latest")
                         }
                     }
