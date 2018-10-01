@@ -81,14 +81,22 @@ pipeline {
         stage('Build Image') {
             steps {
                 script {
-                    openshift.selector('bc', PROJECT_NAME).startBuild("--from-dir=dist/", '--wait')
+                    openshift.withCluster() {
+                        openshift.withProject($ciProject) {
+                            openshift.selector('bc', PROJECT_NAME).startBuild("--from-dir=dist/", '--wait')
+                        }
+                    }
                 }
             }
         }
         stage('Promote to TEST') {
             steps {
                 script {
-                    openshift.tag("${PROJECT_NAME}:latest", "${testProject}/${PROJECT_NAME}:latest")
+                    openshift.withCluster() {
+                        openshift.withProject($ciProject) {
+                            openshift.tag("${PROJECT_NAME}:latest", "${testProject}/${PROJECT_NAME}:latest")
+                        }
+                    }
                 }
             }
         }
@@ -99,7 +107,11 @@ pipeline {
             }
             steps {
                 script {
-                    openshift.tag("${PROJECT_NAME}:latest", "${devProject}/${PROJECT_NAME}:latest")
+                    openshift.withCluster() {
+                        openshift.withProject($ciProject) {
+                            openshift.tag("${PROJECT_NAME}:latest", "${devProject}/${PROJECT_NAME}:latest")
+                        }
+                    }
                 }
             }
         }
