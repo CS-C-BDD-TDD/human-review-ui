@@ -18,13 +18,28 @@ pipeline {
         KUBERNETES_NAMESPACE = "${ciProject}"
     }
     stages {
+        stage('Setup') {
+            parallel {
+                stage('Install SonarScanner') {
+                    steps {
+                        sh 'curl https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.2.0.1227-linux.zip | unzip'
+                        sh 'mv sonar-scanner* sonar-scanner'
+                    }
+                }
+                stage('Update NPM') {
+                    steps {
+                        sh 'npm install -g npm'
+                    }
+                }
+            }
+        }
         stage('Quality And Security') {
             parallel {
-//                stage('Dependency Check') {
-//                    steps {
-//                        sh 'npm audit'
-//                    }
-//                }
+                stage('Dependency Check') {
+                    steps {
+                        sh 'npm audit'
+                    }
+                }
                 stage('Compile & Test') {
                     steps {
                         sh 'npm install'
@@ -53,7 +68,7 @@ pipeline {
             steps {
                 script {
                     withSonarQubeEnv('sonar') {
-                        sh 'sonar-scanner '
+                        sh './sonar-scanner/bin/sonar-scanner '
                     }
                     def qualitygate = waitForQualityGate()
                     if (qualitygate.status != "OK") {
