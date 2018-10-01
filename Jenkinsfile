@@ -83,7 +83,7 @@ pipeline {
                 script {
                     openshift.withCluster() {
                         openshift.withProject(ciProject) {
-                            openshift.selector('bc', PROJECT_NAME).startBuild("--from-dir=dist/", '--wait')
+                            openshift.selector('bc', 'vue-app').startBuild("--from-dir=dist/", '--wait')
                         }
                     }
                 }
@@ -94,7 +94,7 @@ pipeline {
                 script {
                     openshift.withCluster() {
                         openshift.withProject(ciProject) {
-                            openshift.tag("${PROJECT_NAME}:latest", "${testProject}/${PROJECT_NAME}:latest")
+                            openshift.tag("vue-app:latest", "${testProject}/vue-app:latest")
                         }
                     }
                 }
@@ -109,7 +109,7 @@ pipeline {
                 script {
                     openshift.withCluster() {
                         openshift.withProject(ciProject) {
-                            openshift.tag("${PROJECT_NAME}:latest", "${devProject}/${PROJECT_NAME}:latest")
+                            openshift.tag("vue-app:latest", "${devProject}/vue-app:latest")
                         }
                     }
                 }
