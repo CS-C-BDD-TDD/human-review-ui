@@ -16,6 +16,7 @@ pipeline {
     environment {
         PROJECT_NAME = 'human-review'
         KUBERNETES_NAMESPACE = "${ciProject}"
+        JAVA_TOOL_OPTIONS=""
     }
     stages {
         stage('Setup') {
