@@ -22,7 +22,7 @@ pipeline {
             parallel {
                 stage('Install SonarScanner') {
                     steps {
-                        sh 'curl -o sonar-scanner.zip https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.2.0.1227-linux.zip'
+                        sh 'curl -L -o sonar-scanner.zip https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.2.0.1227-linux.zip'
                         sh 'unzip sonar-scanner.zip'
                         sh 'mv sonar-scanner* sonar-scanner'
                     }
