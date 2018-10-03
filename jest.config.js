@@ -1,18 +1,18 @@
 module.exports =
   {
-    'globals': {
+    globals: {
       '__DEV__': true
     },
-    'verbose': true,
-    'testURL': 'http://localhost/',
-    'testEnvironment': 'jsdom',
-    'collectCoverage': true,
-    'collectCoverageFrom': [
+    verbose: true,
+    testURL: 'http://localhost/',
+    testEnvironment: 'jsdom',
+    collectCoverage: true,
+    collectCoverageFrom: [
       '<rootDir>/src/**/*.{vue}'
     ],
-    'coverageDirectory': '<rootDir>/coverage',
+    coverageDirectory: '<rootDir>/coverage',
     coverageReporters: ["json", "lcov", "text", "html"],
-    'coverageThreshold': {
+    coverageThreshold: {
       'global': {
         'branches': 50,
         'functions': 50,
@@ -24,22 +24,22 @@ module.exports =
         'statements': 40
       },
     },
-    'testMatch': [
+    testMatch: [
       '**/tests/unit/?(*.)(spec).js'
     ],
-    'testPathIgnorePatterns': [
+    testPathIgnorePatterns: [
       '<rootDir>/components/coverage/',
       '<rootDir>/test/cypress/',
       '<rootDir>/test/coverage/',
       '<rootDir>/dist/',
       '<rootDir>/node_modules/'
     ],
-    'moduleFileExtensions': [
+    moduleFileExtensions: [
       'js',
       'json',
       'vue'
     ],
-    'moduleNameMapper': {
+    moduleNameMapper: {
       'components/([^\\.]*).vue$': '<rootDir>/src/components/$1.vue',
       '^vue$': 'vue/dist/vue.common.js',
       'src/([^\\.]*)\.js$': '<rootDir>/src/$1.js',
@@ -48,18 +48,18 @@ module.exports =
       '(.*)/(.*).vue$': '<rootDir>/src/$1/$2.vue',
       'quasar': 'quasar-framework/dist/umd/quasar.mat.umd.min.js'
     },
-    'resolver': null,
-    'transformIgnorePatterns': [
+    resolver: null,
+    transformIgnorePatterns: [
       'node_modules/core-js',
       'node_modules/babel-runtime',
       'node_modules/lodash',
       'node_modules/vue'
     ],
-    'transform': {
+    transform: {
       '^.+\\.js$': '<rootDir>/node_modules/babel-jest',
       '.*\\.(vue)$': '<rootDir>/node_modules/vue-jest'
     },
-    'snapshotSerializers': [
+    snapshotSerializers: [
       '<rootDir>/node_modules/jest-serializer-vue'
     ]
   }
