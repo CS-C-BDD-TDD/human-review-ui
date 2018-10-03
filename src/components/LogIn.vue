@@ -35,7 +35,7 @@
 
           <q-card-actions>
             <q-btn class="full-width" type="submit"
-              color="primary" label="Sign In" @click="login" />
+              color="primary" label="Sign In" />
           </q-card-actions>
         </q-card>
     </div>
@@ -49,10 +49,9 @@
 <script>
 export default {
   name: 'LogIn',
-  methods: {
-    login: () => {
-      // No-OP
-    },
-  }
+  data() {
+    return {
+    };
+  },
 };
 </script>
