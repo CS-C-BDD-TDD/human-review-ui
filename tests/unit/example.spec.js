@@ -2,7 +2,7 @@ import{ shallowMount, createLocalVue } from '@vue/test-utils'
 import Router from 'vue-router'
 import Quasar from 'quasar'
 import LogIn from './components/LogIn.vue'
-import Default from './layouts//Default.vue'
+import Default from './layouts/Default.vue'
 import iconSet from 'quasar-framework/icons/fontawesome';
 
 describe('Test LogIn.vue', () => {
