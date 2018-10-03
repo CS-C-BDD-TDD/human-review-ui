@@ -22,9 +22,6 @@ module.exports =
       '**/tests/unit/?(*.)(spec).js'
     ],
     testPathIgnorePatterns: [
-      '<rootDir>/components/coverage/',
-      '<rootDir>/test/cypress/',
-      '<rootDir>/test/coverage/',
       '<rootDir>/dist/',
       '<rootDir>/node_modules/'
     ],
