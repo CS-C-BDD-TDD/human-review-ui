@@ -4,12 +4,8 @@
     <div class="window-width row justify-center items-start">
         <q-card class="bg-white">
           <q-card-media>
-            <img alt="Quasar logo" src="../assets/DHS-logo.jpg">
+            <img alt="Department Of Homeland Security Crest" src="../assets/DHS-logo.jpg">
           </q-card-media>
-
-          <!--q-card-separator/-->
-
-          <q-card-title></q-card-title>
           <q-card-main>
             <form>
               <q-field>
