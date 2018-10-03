@@ -1,9 +1,9 @@
-import{ mount, createLocalVue } from '@vue/test-utils'
+import{ shallowMount, createLocalVue } from '@vue/test-utils'
 import Quasar from 'quasar'
-import LogIn from '@/components/LogIn.vue'
+import LogIn from './components/LogIn.vue'
 import iconSet from 'quasar-framework/icons/fontawesome';
 
-describe('Test Default.vue', () => {
+describe('Test LogIn.vue', () => {
   let localVue, vm;
 
   beforeEach(() => {
@@ -11,10 +11,10 @@ describe('Test Default.vue', () => {
     localVue.use(Quasar, {
       config: {}, iconSet,
     });
-    vm = mount(LogIn, { localVue });
+    vm = shallowMount(LogIn, { localVue });
   });
 
   it('Loads the default View', () => {
-    expect(vm.find('input[type=text]')).toBePresent();
+    expect(vm.find('input[type=text]')).toBeDefined();
   });
 });

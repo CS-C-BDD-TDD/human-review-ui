@@ -8,10 +8,9 @@ module.exports =
     'testEnvironment': 'jsdom',
     'collectCoverage': true,
     'collectCoverageFrom': [
-      '<rootDir>/src/**/*.{js}',
       '<rootDir>/src/**/*.{vue}'
     ],
-    'coverageDirectory': '<rootDir>/test/coverage',
+    'coverageDirectory': '<rootDir>/coverage',
     'coverageThreshold': {
       'global': {
         'branches': 50,
@@ -43,13 +42,11 @@ module.exports =
       'vue'
     ],
     'moduleNameMapper': {
-      'src/components/([^\\.]*).vue$': '<rootDir>/src/components/$1.vue',
-      'src/components/([^\\.]*)$': '<rootDir>/src/components/$1.js',
-      'server-feathers/src/([^\\.]*)$': '<rootDir>/server-feathers/src/$1.js',
-      'server-graphql/src/([^\\.]*)$': '<rootDir>/server-graphql/src/$1.js',
+      'components/([^\\.]*).vue$': '<rootDir>/src/components/$1.vue',
       '^vue$': 'vue/dist/vue.common.js',
-      'src/([^\\.]*)$': '<rootDir>/src/$1.js',
+      'src/([^\\.]*)\.js$': '<rootDir>/src/$1.js',
       'src/([^\\.]*).vue$': '<rootDir>/src/$1.vue',
+      'src/(.*)/(.*).vue$': '<rootDir>/src/$1/$2.vue',
       '(.*)/(.*).vue$': '<rootDir>/src/$1/$2.vue',
       'quasar': 'quasar-framework/dist/umd/quasar.mat.umd.min.js'
     },

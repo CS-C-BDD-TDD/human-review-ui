@@ -49,5 +49,10 @@
 <script>
 export default {
   name: 'LogIn',
+  methods: {
+    login: () => {
+      // No-OP
+    },
+  }
 };
 </script>
