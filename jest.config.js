@@ -18,11 +18,7 @@ module.exports =
         'functions': 50,
         'lines': 50,
         'statements': 50
-      },
-      './src/components/': {
-        'branches': 40,
-        'statements': 40
-      },
+      }
     },
     testMatch: [
       '**/tests/unit/?(*.)(spec).js'
