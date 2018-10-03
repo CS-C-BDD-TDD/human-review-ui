@@ -4,8 +4,6 @@ module.exports =
       '__DEV__': true
     },
     verbose: true,
-    testURL: 'http://localhost/',
-    testEnvironment: 'jsdom',
     collectCoverage: true,
     collectCoverageFrom: [
       '<rootDir>/src/**/*.{vue}'
