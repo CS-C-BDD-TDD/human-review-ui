@@ -11,6 +11,7 @@ module.exports =
       '<rootDir>/src/**/*.{vue}'
     ],
     'coverageDirectory': '<rootDir>/coverage',
+    coverageReporters: ["json", "lcov", "text", "html"],
     'coverageThreshold': {
       'global': {
         'branches': 50,
@@ -22,9 +23,6 @@ module.exports =
         'branches': 40,
         'statements': 40
       },
-      './src/reducers/**/*.js': {
-        'statements': 90,
-      }
     },
     'testMatch': [
       '**/tests/unit/?(*.)(spec).js'
