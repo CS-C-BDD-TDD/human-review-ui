@@ -1,12 +1,20 @@
-import { shallowMount } from '@vue/test-utils';
-import HelloWorld from '@/components/HelloWorld.vue';
+import{ mount, createLocalVue } from '@vue/test-utils'
+import Quasar from 'quasar'
+import LogIn from '@/components/LogIn.vue'
+import iconSet from 'quasar-framework/icons/fontawesome';
 
-describe('HelloWorld.vue', () => {
-  it('renders props.msg when passed', () => {
-    const msg = 'new message';
-    const wrapper = shallowMount(HelloWorld, {
-      propsData: { msg },
+describe('Test Default.vue', () => {
+  let localVue, vm;
+
+  beforeEach(() => {
+    localVue = createLocalVue();
+    localVue.use(Quasar, {
+      config: {}, iconSet,
     });
-    expect(wrapper.text()).toMatch(msg);
+    vm = mount(LogIn, { localVue });
+  });
+
+  it('Loads the default View', () => {
+    expect(vm.find('input[type=text]')).toBePresent();
   });
 });
