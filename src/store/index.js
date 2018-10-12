@@ -15,25 +15,30 @@ export default new Vuex.Store({
     },
 
     updateToken(state, token) {
+      console.log(`update token ${token}`);
       state.token = token;
     },
   },
 
   actions: {
     getLoginToken({ commit }, input) {
-      //   const urlPathVars = `/api/v1/user?username=${input.username}&password=${input.password}`;
-        const config = {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        };
-        const authCredentials = {
-          username: `${input.username}`,
-          password: `${input.password}`,
-        };
-  
-        axios.put('/api/v1/user', authCredentials, config).then(result => commit('updateToken', result.data))
-          .catch(console.error);
-      },
-    }
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+      };
+
+      const authCredentials = {
+        username: `${input.username}`,
+        password: `${input.password}`,
+      };
+      
+      console.log(`backend: ${process.env.VUE_APP_HUMAN_REVIEW_BACKEND}`);
+
+      axios.put(process.env.VUE_APP_HUMAN_REVIEW_BACKEND, authCredentials, config)
+        .then(result => commit('updateToken', result.data))
+        .catch(console.error);
+    },
+  },
 });
