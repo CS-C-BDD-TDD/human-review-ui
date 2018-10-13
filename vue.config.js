@@ -1,4 +1,8 @@
 module.exports = {
+  // baseUrl: process.env.NODE_ENV === 'production'
+  //   ? '/hr-ui'
+  //   : '/',
+
   pluginOptions: {
     quasar: {
       theme: 'mat',
@@ -10,14 +14,13 @@ module.exports = {
     proxy: {
       '/api/v1/user': {
         target: 'http://human-review-backend-labs-test.apps.domino.rht-labs.com',
-        pathRewrite: { '^/api/v1/user': '' },
-        changeOrigin: false,
-        prependPath: false,
+        // target: 'localhost:8080',
+        changeOrigin: true,
       },
     },
   },
 
   transpileDependencies: [
-    /[\\\/]node_modules[\\\/]quasar-framework[\\\/]/,
+    /[\\/]node_modules[\\/]quasar-framework[\\/]/,
   ],
 };
