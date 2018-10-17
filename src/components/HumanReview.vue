@@ -28,13 +28,15 @@
 </template>
 
 <script>
+import { mapActions, mapGetters, mapMutations } from 'vuex';
+
 export default {
   created() {
     console.log('Human review component is created');
     const logmsg = 'get HR pending fields';
     console.log(logmsg);
 
-    this.$store.dispatch('getHRPending', Object.assign({}, this.input));
+    this.getHRPending(Object.assign({}, this.input));
     console.log('completed loading pending ....');
   },
 
@@ -72,14 +74,9 @@ export default {
   },
 
   methods: {
-    getPending() {
-      const logmsg = 'get HR pending fields';
-      console.log(logmsg);
-
-      this.$store.dispatch('getHRPending', Object.assign({}, this.input))
-        .then(() => this.$router.push('/humanreview'));
-    },
+    ...mapActions([
+      'getHRPending',
+    ]),
   },
-
 };
 </script>

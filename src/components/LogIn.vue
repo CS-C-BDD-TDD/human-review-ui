@@ -38,9 +38,10 @@
 
           <q-card-actions>
             <q-btn class="full-width" type="submit"
-              color="primary" label="Sign In" @click="login()" />
+              color="primary" label="Sign In" @click="login" />
           </q-card-actions>
         </q-card>
+        <button @click="login()"/>
     </div>
 
   </q-page>
@@ -50,8 +51,11 @@
 </style>
 
 <script>
+import { mapActions, mapGetters, mapMutations } from 'vuex';
+
 export default {
   name: 'LogIn',
+
 
   data() {
     return {
@@ -63,13 +67,17 @@ export default {
   },
 
   methods: {
+    ...mapActions([
+      'getLoginToken',
+    ]),
+
     login() {
       const enteredUsername = this.input.username;
       const enteredPassword = this.input.password;
       const logmsg = 'Logging in with ${enteredUsername} ${enteredPassword}';
       console.log(logmsg);
 
-      this.$store.dispatch('getLoginToken', Object.assign({}, this.input))
+      this.getLoginToken(Object.assign({}, this.input))
         .then(() => this.$router.push('/humanreview'));
     },
   },
