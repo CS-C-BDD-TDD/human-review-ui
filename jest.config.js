@@ -1,12 +1,12 @@
 module.exports =
   {
     globals: {
-      __DEV__: true,
+      __DEV__: true
     },
-    verbose: true,
+    verbose: false,
     collectCoverage: true,
     collectCoverageFrom: [
-      '<rootDir>/src/**/*.{vue}',
+      '<rootDir>/src/**/*.{vue}'
     ],
     coverageDirectory: '<rootDir>/coverage',
     coverageReporters: ['json', 'lcov', 'text', 'html'],
@@ -15,37 +15,37 @@ module.exports =
         branches: 10,
         functions: 0,
         lines: 10,
-        statements: 10,
-      },
+        statements: 10
+      }
     },
-    testMatch: ["**/*.steps.js"],
+    testMatch: ['**/*.steps.js'],
     moduleFileExtensions: [
       'js',
       'json',
-      'vue',
+      'vue'
     ],
     reporters: [
-      "default",
+      'default',
       [
-        "./node_modules/jest-html-reporter", {
-          pageTitle: "Test Report",
+        './node_modules/jest-html-reporter', {
+          pageTitle: 'Test Report',
           includeFailureMsg: true,
           includeConsoleLog: true,
-          theme: "darkTheme"
+          theme: 'darkTheme'
         }
       ]
     ],
     moduleNameMapper: {
-      "^vue$": "vue/dist/vue.common.js",
-      "^@/(.*)$": "<rootDir>/src/$1",
-      quasar: "quasar-framework/dist/umd/quasar.mat.umd.min.js"
+      '^vue$': 'vue/dist/vue.common.js',
+      '^@/(.*)$': '<rootDir>/src/$1',
+      quasar: 'quasar-framework/dist/umd/quasar.mat.umd.min.js'
     },
     resolver: null,
     transform: {
       '^.+\\.js$': '<rootDir>/node_modules/babel-jest',
-      '.*\\.(vue)$': '<rootDir>/node_modules/vue-jest',
+      '.*\\.(vue)$': '<rootDir>/node_modules/vue-jest'
     },
     snapshotSerializers: [
-      '<rootDir>/node_modules/jest-serializer-vue',
-    ],
+      '<rootDir>/node_modules/jest-serializer-vue'
+    ]
   };

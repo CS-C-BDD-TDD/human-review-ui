@@ -24,6 +24,9 @@
             <q-btn class="full-width" color="primary" label="Sign In" @click="login" />
           </q-card-actions>
         </q-card>
+        <q-alert color="red" v-if="failedLogin">
+          Login failed
+        </q-alert>
     </div>
 </template>
 
@@ -31,6 +34,8 @@
 </style>
 
 <script>
+import HumanReview from 'human_review';
+
 export default {
   name: 'Login',
 
@@ -38,14 +43,33 @@ export default {
     return {
       username: '',
       password: '',
+      token: '',
+      failedLogin: false
     };
   },
 
   methods: {
     login: function() {
-      this.$emit("login", { username: this.username, password: this.password });
+      let credentials = new HumanReview.AuthCredentials();
+      credentials.username = this.username;
+      credentials.password = this.password;
+ 
+      // Access the `$api` client via the `this` object and send the request with a callback.
+      // The callback needs to be an ES6 arrow function (closure) so that `this` is captured in the scope.
+      this.$api.userPut(credentials, (error, returnedToken, response) => {
+        if (error === null) {
+          // Success
+          // Tell the Vue Router to redirect to the humanreview page and pass the authentication token
+          // as a parameter
+          this.$router.push({ name: 'humanreview', params: { token: returnedToken } });
+          this.token = returnedToken;
+        } else {
+          // Failure - Handle error
+          this.failedLogin = true;
+        }
+      });
     }
-  },
+  }
 };
 </script>
 

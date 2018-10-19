@@ -15,13 +15,14 @@ export default new Router({
         {
           path: '',
           name: 'login',
-          component: Login,
+          component: LogIn
         }, {
           path: '/humanreview',
           name: 'humanreview',
           component: HumanReview,
-        },
-      ],
-    },
-  ],
+          props: true
+        }
+      ]
+    }
+  ]
 });
