@@ -1,9 +1,12 @@
+import Vue from 'vue';
 import { defineFeature, loadFeature } from "jest-cucumber";
 import Quasar from "quasar-framework";
 import { mount, createLocalVue } from "@vue/test-utils";
 import LogIn from "@/views/LogIn.vue";
 import iconSet from "quasar-framework/icons/fontawesome";
 import "quasar-extras/fontawesome";
+
+Vue.config.silent = true;
 
 const feature = loadFeature("tests/unit/features/Login.feature");
 
@@ -43,11 +46,6 @@ defineFeature(feature, test => {
     when(/^I input a password$/, () => {
       expect(wrapper.find('input[type=password]').element).toBeDefined();
       wrapper.find('input[type=password]').setValue(PASSWORD);
-    });
-
-    when(/^I click the SignIn button$/, () => {
-      // expect(wrapper.find('div.q-btn-inner').length).toEqual(1);
-      wrapper.find('button.q-btn').trigger('click');
     });
 
     then(/^I expect the username value to be set correctly$/, () => {

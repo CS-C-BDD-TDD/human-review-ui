@@ -1,9 +1,12 @@
+import Vue from 'vue';
 import { defineFeature, loadFeature } from "jest-cucumber";
 import Quasar from "quasar-framework";
 import { mount, createLocalVue } from "@vue/test-utils";
 import ReviewItem from "@/components/ReviewItem.vue";
 import iconSet from "quasar-framework/icons/fontawesome";
 import "quasar-extras/fontawesome";
+
+Vue.config.silent = true;
 
 const feature = loadFeature("tests/unit/features/ReviewItem.feature");
 const TEST_VALUE_INPUT = "This is my test value";
