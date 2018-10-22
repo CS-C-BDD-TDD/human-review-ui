@@ -18,7 +18,7 @@ describe('Test LogIn.vue', () => {
 
   it('Loads the Default view', () => {
     wrapper = shallowMount(Default, { localVue });
-    expect(wrapper.html()).toContain('YellowDog')
+    expect(wrapper.html()).toContain('YellowDog1')
   });
 
   it('Loads the LogIn View', () => {
