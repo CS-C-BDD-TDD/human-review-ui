@@ -5,10 +5,16 @@ import { mount, createLocalVue } from "@vue/test-utils";
 import LogIn from "@/views/LogIn.vue";
 import iconSet from "quasar-framework/icons/fontawesome";
 import "quasar-extras/fontawesome";
+import { any } from 'async';
 
 Vue.config.silent = true;
 
 const feature = loadFeature("tests/unit/features/Login.feature");
+
+const USERNAME = 'someUsername';
+const PASSWORD = 'somePassword';
+const EXPECTED_CREDENTIALS = { username: USERNAME, password: PASSWORD };
+const TEST_TOKEN = 'example_token';
 
 defineFeature(feature, test => {
   let localVue;
@@ -25,10 +31,6 @@ defineFeature(feature, test => {
 
   test("Login page is correctly rendered", ({ given, when, then }) => {
     let wrapper;
-
-    const USERNAME = 'someUsername';
-    const PASSWORD = 'somePassword';
-    const EXPECTED_CREDENTIALS = { username: USERNAME, password: PASSWORD };
 
     given(/^I am a user with a web browser$/, () => {
       wrapper = mount(LogIn, { localVue });
@@ -70,9 +72,9 @@ defineFeature(feature, test => {
        * Mock implementation of the `userPut` method for the API client library
        */
       $api.userPut = jest.fn((credentials, callback) => {
-        expect(credentials.username).toEqual('username');
-        expect(credentials.password).toEqual('password');
-        callback(null, 'example_token', {});
+        expect(credentials.username).toEqual(USERNAME);
+        expect(credentials.password).toEqual(PASSWORD);
+        callback(null, TEST_TOKEN, {});
       });
     });
 
@@ -82,7 +84,7 @@ defineFeature(feature, test => {
        */
       $router.push = jest.fn((pushInfo) => {
         expect(pushInfo.name).toEqual('humanreview');
-        expect(pushInfo.params).toEqual({ token: 'example_token' });
+        expect(pushInfo.params).toEqual({ token: TEST_TOKEN });
       });
     });
 
@@ -97,11 +99,11 @@ defineFeature(feature, test => {
     });
 
     when('I enter a valid username', () => {
-      wrapper.find('input[type=text]').setValue('username');
+      wrapper.find('input[type=text]').setValue(USERNAME);
     });
 
     when('I enter a valid password', () => {
-      wrapper.find('input[type=password]').setValue('password');
+      wrapper.find('input[type=password]').setValue(PASSWORD);
     });
 
     when('I click the LOGIN button', () => {
@@ -110,12 +112,14 @@ defineFeature(feature, test => {
 
     then('I expect that the REST API Client will be called with appropriate parameters', async () => {
       await wrapper.vm.$nextTick();
-      expect(wrapper.vm.$data.token).toEqual('example_token');
+      expect(wrapper.vm.$data.token).toEqual(TEST_TOKEN);
       expect($api.userPut).toHaveBeenCalled();
+      expect($api.userPut.mock.calls[0][0]).toEqual(EXPECTED_CREDENTIALS);  // Check to see if the first parameter is the expected credentials.
     });
 
     then('I expect that the user will have been navigated to the HumanReview page', () => {
       expect($router.push).toHaveBeenCalled();
+      expect($router.push).toBeCalledWith({ name: 'humanreview', params: { token: TEST_TOKEN } });
     });
 
     then('I expect that the failed login alert is not visible', () => {
@@ -132,8 +136,8 @@ defineFeature(feature, test => {
        * Mock implementation of the `userPut` method for the API client library
        */
       $api.userPut = jest.fn((credentials, callback) => {
-        expect(credentials.username).toEqual('username');
-        expect(credentials.password).toEqual('password');
+        expect(credentials.username).toEqual(USERNAME);
+        expect(credentials.password).toEqual(PASSWORD);
         callback('Invalid username and/or password', null, {});
       });
     });
@@ -148,11 +152,11 @@ defineFeature(feature, test => {
     });
 
     when('I enter an invalid username', () => {
-      wrapper.find('input[type=text]').setValue('username');
+      wrapper.find('input[type=text]').setValue(USERNAME);
     });
 
     when('I enter a password', () => {
-      wrapper.find('input[type=password]').setValue('password');
+      wrapper.find('input[type=password]').setValue(PASSWORD);
     });
 
     when('I click the LOGIN button', () => {
