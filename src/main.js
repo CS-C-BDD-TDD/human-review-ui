@@ -9,6 +9,8 @@ import router from './router';
 
 import store from './store';
 
+const PASSWORD = 'SomeInsecurePassword';
+
 Vue.use(Quasar, {
   config: {}, iconSet,
 });
