@@ -9,14 +9,15 @@
 
           <q-card-title></q-card-title>
           <q-card-main>
-            <form>
-              <q-field>
-                <q-input v-model="username" type="text" float-label="User ID" required />
-              </q-field>
-              <q-field>
-                <q-input v-model="password" type="password" float-label="Password" required />
-              </q-field>
-            </form>
+            <q-field>
+              <q-input v-model="username" type="text" float-label="User ID" :error="failedLogin" required />
+            </q-field>
+            <q-field>
+              <q-input v-model="password" type="password" float-label="Password" :error="failedLogin" required />
+            </q-field>
+            <q-alert color="red" v-if="failedLogin">
+              Login failed. Please try again.
+            </q-alert>
           </q-card-main>
 
           <q-card-actions>
@@ -24,44 +25,41 @@
             <q-btn class="full-width" color="primary" label="Sign In" @click="login" />
           </q-card-actions>
         </q-card>
-        <q-alert color="red" v-if="failedLogin">
-          Login failed. Please try again.
-        </q-alert>
     </div>
 </template>
 
 <style>
+.errorColor {
+  background-color: 
+}
 </style>
 
 <script>
 export default {
   name: 'Login',
 
-  data: () => {
-    return {
-      username: '',
-      password: '',
-      token: '',
-      failedLogin: false
-    };
-  },
+  data: () => ({
+    username: '',
+    password: '',
+    token: '',
+    failedLogin: false
+  }),
 
   methods: {
-    login() {
-//       this.$emit("login", { username: this.username, password: this.password });
-
+    login: function () {
       // Access the '$axios' client via the 'this' object and send the request. We will then
       // recieve a 'Promise' which contains the 'response' object from the Axios client.
       this.$axios.put('/api/v1/user', { username: this.username, password: this.password })
         .then((response) => {
           if (response.status === 200) {
             this.token = response.data;
-            console.log(JSON.stringify(response.data));
             this.$router.push({ name: 'humanreview', params: { token: this.token }});
           } else {
-            console.log(JSON.stringify(response.data));
             this.failedLogin = true;
           }
+        }).catch((error) => {
+          console.log(error);
+          this.failedLogin = true;
         });
     }
   },
