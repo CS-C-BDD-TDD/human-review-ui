@@ -5,7 +5,6 @@ import { mount, createLocalVue } from "@vue/test-utils";
 import LogIn from "@/views/LogIn.vue";
 import iconSet from "quasar-framework/icons/fontawesome";
 import "quasar-extras/fontawesome";
-import { any } from 'async';
 
 Vue.config.silent = true;
 
@@ -64,17 +63,28 @@ defineFeature(feature, test => {
 
   test('Verify login logic works in LogIn component', ({ given, when, then }) => {
     let wrapper;
-    const $api = {};
+    const $axios = {};
     const $router = {};
 
-    given('a mock instance of the API client', () => {
+    given('a mock instance of Axios', () => {
       /**
-       * Mock implementation of the `userPut` method for the API client library
+       * Mock implementation of the `put` method for the API client library
        */
-      $api.userPut = jest.fn((credentials, callback) => {
-        expect(credentials.username).toEqual(USERNAME);
-        expect(credentials.password).toEqual(PASSWORD);
-        callback(null, TEST_TOKEN, {});
+      $axios.put = jest.fn((path, options) => {
+        expect(path).toEqual('/api/v1/user');
+        expect(options.username).toEqual(USERNAME);
+        expect(options.password).toEqual(PASSWORD);
+        let response = {
+          // `data` is the response that was provided by the server
+          data: {token: TEST_TOKEN},
+        
+          // `status` is the HTTP status code from the server response
+          status: 200,
+        
+          // `statusText` is the HTTP status message from the server response
+          statusText: 'OK',
+        };
+        return Promise.resolve(response);
       });
     });
 
@@ -92,7 +102,7 @@ defineFeature(feature, test => {
       wrapper = mount(LogIn, {
         localVue,
         mocks: { // Implement the mocks here!
-          $api,
+          $axios,
           $router
         }
       });
@@ -110,14 +120,16 @@ defineFeature(feature, test => {
       wrapper.find('button').trigger('click');
     });
 
-    then('I expect that the REST API Client will be called with appropriate parameters', async () => {
+    then('I expect that the axios client will be called with appropriate parameters', async () => {
       await wrapper.vm.$nextTick();
       expect(wrapper.vm.$data.token).toEqual(TEST_TOKEN);
-      expect($api.userPut).toHaveBeenCalled();
-      expect($api.userPut.mock.calls[0][0]).toEqual(EXPECTED_CREDENTIALS);  // Check to see if the first parameter is the expected credentials.
+      expect($axios.put).toHaveBeenCalled();
+      expect($axios.put.mock.calls[0][0]).toEqual('/api/v1/user');  // Check to see if the first parameter is the expected credentials.
+      expect($axios.put.mock.calls[0][1]).toEqual({ username: USERNAME, password: PASSWORD });  // Check to see if the first parameter is the expected credentials.
     });
 
-    then('I expect that the user will have been navigated to the HumanReview page', () => {
+    then('I expect that the user will have been navigated to the HumanReview page', async () => {
+      await wrapper.vm.$nextTick();
       expect($router.push).toHaveBeenCalled();
       expect($router.push).toBeCalledWith({ name: 'humanreview', params: { token: TEST_TOKEN } });
     });
@@ -129,16 +141,27 @@ defineFeature(feature, test => {
 
   test('Verify login logic handles invalid username properly', ({ given, when, then }) => {
     let wrapper;
-    const $api = {};
+    const $axios = {};
 
-    given('a mock instance of the API client', () => {
+    given('a mock instance of axios', () => {
       /**
-       * Mock implementation of the `userPut` method for the API client library
+       * Mock implementation of the `put` method for the API client library
        */
-      $api.userPut = jest.fn((credentials, callback) => {
-        expect(credentials.username).toEqual(USERNAME);
-        expect(credentials.password).toEqual(PASSWORD);
-        callback('Invalid username and/or password', null, {});
+      $axios.put = jest.fn((path, options) => {
+        expect(path).toEqual('/api/v1/user');
+        expect(options.username).toEqual(USERNAME);
+        expect(options.password).toEqual(PASSWORD);
+        let response = {
+          // `data` is the response that was provided by the server
+          data: {},
+        
+          // `status` is the HTTP status code from the server response
+          status: 401,
+        
+          // `statusText` is the HTTP status message from the server response
+          statusText: 'OK',
+        }
+        return Promise.resolve(response);
       });
     });
 
@@ -146,7 +169,7 @@ defineFeature(feature, test => {
       wrapper = mount(LogIn, {
         localVue,
         mocks: { // Implement the mocks here!
-          $api
+          $axios
         }
       });
     });
@@ -163,9 +186,9 @@ defineFeature(feature, test => {
       wrapper.find('button').trigger('click');
     });
 
-    then('I expect that the REST API Client will be called with appropriate parameters', async () => {
+    then('I expect that the axios client will be called with appropriate parameters', async () => {
       await wrapper.vm.$nextTick();
-      expect($api.userPut).toHaveBeenCalled();
+      expect($axios.put).toHaveBeenCalled();
     });
 
     then('I expect an error message to be displayed on the Login screen', () => {
