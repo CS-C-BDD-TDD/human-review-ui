@@ -99,6 +99,21 @@ pipeline {
                 }
             }
         }
+        stage('Twistlock Scan') {
+            steps{
+                script {
+                    sh 'docker pull labs-ci-cd/vue-app:latest'
+                    twistlockScan ca: '', cert: '', compliancePolicy: 'warn', dockerAddress: 'unix:///var/run/docker.sock', gracePeriodDays: 0, ignoreImageBuildTime: true, image: 'labs-test/vue-app', key: '', logLevel: 'true', policy: 'warn', requirePackageUpdate: false, timeout: 10
+                       }
+                 }
+        }
+        stage ('Twistlock Publish') {
+            steps{
+                script {
+            twistlockPublish ca: '', cert: '', dockerAddress: 'unix:///var/run/docker.sock', ignoreImageBuildTime: true, image: 'labs-test/vue-app', key: '', logLevel: 'true', timeout: 10
+                       }
+            }
+        }
         stage('Promote to TEST') {
             steps {
                 script {

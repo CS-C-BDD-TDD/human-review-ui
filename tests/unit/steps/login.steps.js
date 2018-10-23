@@ -76,7 +76,7 @@ defineFeature(feature, test => {
         expect(options.password).toEqual(PASSWORD);
         let response = {
           // `data` is the response that was provided by the server
-          data: {token: TEST_TOKEN},
+          data: TEST_TOKEN,
         
           // `status` is the HTTP status code from the server response
           status: 200,
@@ -140,6 +140,63 @@ defineFeature(feature, test => {
   });
 
   test('Verify login logic handles invalid username properly', ({ given, when, then }) => {
+    let wrapper;
+    const $axios = {};
+
+    given('a mock instance of axios', () => {
+      /**
+       * Mock implementation of the `put` method for the API client library
+       */
+      $axios.put = jest.fn((path, options) => {
+        expect(path).toEqual('/api/v1/user');
+        expect(options.username).toEqual(USERNAME);
+        expect(options.password).toEqual(PASSWORD);
+        let response = {
+          // `data` is the response that was provided by the server
+          data: {},
+        
+          // `status` is the HTTP status code from the server response
+          status: 401,
+        
+          // `statusText` is the HTTP status message from the server response
+          statusText: 'OK',
+        }
+        return Promise.resolve(response);
+      });
+    });
+
+    given('an instance of the LogIn component with our mock injected', () => {
+      wrapper = mount(LogIn, {
+        localVue,
+        mocks: { // Implement the mocks here!
+          $axios
+        }
+      });
+    });
+
+    when('I enter an invalid username', () => {
+      wrapper.find('input[type=text]').setValue(USERNAME);
+    });
+
+    when('I enter a password', () => {
+      wrapper.find('input[type=password]').setValue(PASSWORD);
+    });
+
+    when('I click the LOGIN button', () => {
+      wrapper.find('button').trigger('click');
+    });
+
+    then('I expect that the axios client will be called with appropriate parameters', async () => {
+      await wrapper.vm.$nextTick();
+      expect($axios.put).toHaveBeenCalled();
+    });
+
+    then('I expect an error message to be displayed on the Login screen', () => {
+      expect(wrapper.vm.$data.failedLogin).toBeTruthy();
+    });
+  });
+
+  test('The user interface should handle situations where the backend does not respond', ({ given, when, then }) => {
     let wrapper;
     const $axios = {};
 

@@ -5,7 +5,11 @@ module.exports = {
       importAll: true,
     },
   },
-
+  configureWebpack: {
+    resolve: {
+      extensions: ['.wasm', '.mjs', '.js', '.json']
+    }
+  },
   devServer: {
     proxy: {
       '/api/v1/user': {

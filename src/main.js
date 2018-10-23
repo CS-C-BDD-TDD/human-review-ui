@@ -9,7 +9,7 @@ import App from './App.vue';
 import router from './router';
 
 Vue.prototype.$axios = axios.create({
-  baseURL: 'https://some-domain.com/api/',
+  baseURL: window.apiBaseUrl,
   timeout: 1000
 });
 

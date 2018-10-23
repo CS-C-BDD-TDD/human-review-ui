@@ -13,8 +13,8 @@
       </q-toolbar>
     </q-layout-header>
 
-    <q-page-container>  
-      <q-page class="flex flex-center bg-primary" >
+    <q-page-container>
+      <q-page class="flex flex-center bg-primary">
         <router-view />
       </q-page>
     </q-page-container>
@@ -22,27 +22,13 @@
 </template>
 
 <script>
-import {DefaultApi, AuthCredentials} from 'human_review_api_client';
-
 
 export default {
   name: 'LayoutDefault',
   data() {
     return {
       // leftDrawerOpen: this.$q.platform.is.desktop,
-      clientApi: {},
-      token: '',
-   
     };
-  },
-  mounted: function() {
-    this.clientApi = new DefaultApi("http://human-review-backend-labs-dev.apps.domino.rht-labs.com/api/v1");
-  },
-  methods: {
-    login: function(credentials) {
-
-
-    }
   }
 };
 </script>

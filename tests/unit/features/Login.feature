@@ -27,3 +27,12 @@ Scenario: Verify login logic handles invalid username properly
   And   I click the LOGIN button
   Then  I expect that the axios client will be called with appropriate parameters
   And   I expect an error message to be displayed on the Login screen
+
+Scenario: The user interface should handle situations where the backend does not respond
+  Given an mock instance of axios
+  And   an instance of the LogIn component with our mock injected
+  When  I enter a username
+  And   I enter a password
+  And   I click the LOGIN button
+  Then  I expect the axios client will be called with the appropriate parameters
+  And   I expect an error message to be displayed on the Login screen

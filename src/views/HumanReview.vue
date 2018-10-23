@@ -40,11 +40,11 @@ export default {
 
   name: 'humanreview',
   data: () => ({
-      selectOptions: [
-        { label: 'Confirm Risk', value: '1' },
-        { label: 'Not PII', value: '2' },
-        { label: 'Redact Field', value: '3' }
-      ],
+    selectOptions: [
+      { label: 'Confirm Risk', value: '1' },
+      { label: 'Not PII', value: '2' },
+      { label: 'Redact Field', value: '3' }
+    ],
     columns: [
 
       { name: 'id', required: true, label: 'Stix Id', align: 'left', field: 'stixId', sortable: true, style: 'width: 10px' },
@@ -54,16 +54,16 @@ export default {
       { name: 'value', label: 'Value', align: 'left', field: 'value', sortable: true, style: 'width: 50px' },
       { name: 'status', label: 'Status', align: 'left', field: 'status', sortable: true, style: 'width: 10px' },
       { name: 'action', label: 'Action', align: 'left', field: 'actions', sortable: true, style: 'width: 100px' },
-      { name: 'g-action', label: 'Group Action', align: 'left', field: 'groupAction', sortable: true, style: 'width: 50px' },
+      { name: 'g-action', label: 'Group Action', align: 'left', field: 'groupAction', sortable: true, style: 'width: 50px' }
     ],
     tableData: [
       { stixId: '1', actionDate: '09/15/2018', objectType: 'Indicator', field: 'Title', value: 'I contain a SSN', status: 'New', groupAction: 'Disseminate' },
       { stixId: '1', actionDate: '09/15/2018', objectType: 'Indicator', field: 'Description', value: 'I contain a name', status: 'New', groupAction: 'Disseminate' },
       { stixId: '2', actionDate: '09/18/2018', objectType: 'Indicator', field: 'Title', value: 'I contain a SSN: 123-45-6789', status: 'New', groupAction: 'Disseminate' },
-      { stixId: '2', actionDate: '09/18/2018', objectType: 'Indicator', field: 'Description', value: '123 Massachusetts Ave, NW, Washington DC', status: 'New', groupAction: 'Disseminate' },
-    ],
+      { stixId: '2', actionDate: '09/18/2018', objectType: 'Indicator', field: 'Description', value: '123 Massachusetts Ave, NW, Washington DC', status: 'New', groupAction: 'Disseminate' }
+    ]
     // separator: 'horizontal'
-  }),
+  })
 
 /*   computed: {
     pendingList() {

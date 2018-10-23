@@ -37,27 +37,24 @@
 export default {
   name: 'Login',
 
-  data: () => {
-    return {
-      username: '',
-      password: '',
-      token: '',
-      failedLogin: false
-    };
-  },
+  data: () => ({
+    username: '',
+    password: '',
+    token: '',
+    failedLogin: false
+  }),
 
   methods: {
-    login: function() { 
+    login() {
       // Access the `$axios` client via the `this` object and send the request. We will then
       // recieve a `Promise` which contains the `response` object from the Axios client.
       this.$axios.put('/api/v1/user', { username: this.username, password: this.password })
         .then((response) => {
-          if (response.status == 200) {
+          if (response.status === 200) {
             // Success
-            // Tell the Vue Router to redirect to the humanreview page and pass the authentication token
-            // as a parameter
-            this.token = response.data.token;
-            console.log(JSON.stringify(response.data));
+            // Tell the Vue Router to redirect to the humanreview page and
+            // pass the authentication token as a parameter
+            this.token = response.data;
             this.$router.push({ name: 'humanreview', params: { token: this.token } });
           } else {
             // Failure - Handle error
