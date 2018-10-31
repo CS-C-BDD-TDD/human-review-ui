@@ -22,7 +22,7 @@ pipeline {
             parallel {
                 stage('Update NPM') {
                     steps {
-                        sh 'npm install -g npm'
+                        sh 'sudo npm install -g npm'
                     }
                 }
             }
