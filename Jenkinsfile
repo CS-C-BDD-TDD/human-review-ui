@@ -18,20 +18,20 @@ pipeline {
         KUBERNETES_NAMESPACE = "${ciProject}"
     }
     stages {
-        stage('Setup') {
-            parallel {
-                stage('Update NPM') {
-                    steps {
-                        sh 'npm install -g npm'
-                    }
-                }
-            }
-        }
         stage('Quality And Security') {
             parallel {
                 stage('Dependency Check') {
                     steps {
-                        echo 'npm audit'
+                        sh 'npm audit --json | npm-audit-html -o npm-audit-report.html'
+                        publishHTML(target: [
+                            reportDir             : './',
+                            reportFiles           : 'npm-audit-report.html',
+                            reportName            : 'NPM Audit Report',
+                            keepAll               : true,
+                            alwaysLinkToLastBuild : true,
+                            allowMissing          : true
+                        ])
+                    sh 'npm-audit-ci-wrapper -t high --ignore-dev-dependencies'
                     }
                 }
                 stage('Compile & Test') {
