@@ -22,6 +22,7 @@ pipeline {
             parallel {
                 stage('Update NPM') {
                     steps {
+                        sh 'npm config set unsafe-perm=true'
                         sh 'npm install -g npm'
                     }
                 }
