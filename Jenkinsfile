@@ -22,7 +22,7 @@ pipeline {
             parallel {
                 stage('Update NPM') {
                     steps {
-                        sh 'chown -R jenkins:jenkins /home/jenkins/.npm/'
+                        sh 'chown -R ncho:ncho /home/jenkins/.npm/'
                         sh 'npm install -g npm'
                     }
                 }
