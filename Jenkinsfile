@@ -22,7 +22,7 @@ pipeline {
             parallel {
                 stage('Update NPM') {
                     steps {
-                        sh 'cd /tmp'
+                        sh 'sudo chown -R $(whoami) /home/jenkins'
                         sh 'npm install -g npm'
                     }
                 }
