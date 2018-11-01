@@ -26,7 +26,7 @@ pipeline {
                         sh 'npm config set prefix "/tmp/.npm-global"'
                         sh 'export PATH=/tmp/.npm-global/bin:$PATH'
                         sh 'cd /tmp/.npm-global'
-                        sh 'npm install -g npm'
+                        sh 'npm install -g npm --no-cache'
                     }
                 }
             }
