@@ -25,7 +25,7 @@ pipeline {
                         sh 'mkdir /tmp/.npm-global'
                         sh 'npm config set prefix "/tmp/.npm-global"'
                         sh 'export PATH=/tmp/.npm-global/bin:$PATH'
-                        sh 'source ~/.profile'
+                        sh 'cd /tmp/.npm-global'
                         sh 'npm install -g npm'
                     }
                 }
