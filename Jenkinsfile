@@ -22,7 +22,7 @@ pipeline {
             parallel {
                 stage('Update NPM') {
                     steps {
-                        sh '$(whoami)'
+                        sh '$(whoami); pwd; ls -ltr'
                         sh 'mkdir /tmp/.npm-global'
                         sh 'npm config set prefix "/tmp/.npm-global"'
                         sh 'export PATH=/tmp/.npm-global/bin:$PATH'
