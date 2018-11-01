@@ -22,6 +22,7 @@ pipeline {
             parallel {
                 stage('Update NPM') {
                     steps {
+                        sh 'su - jenkins'
                         sh 'mkdir /tmp/.npm-global'
                         sh 'npm config set prefix "/tmp/.npm-global"'
                         sh 'export PATH=/tmp/.npm-global/bin:$PATH'
