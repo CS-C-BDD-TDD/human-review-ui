@@ -11,22 +11,17 @@ openshift.withCluster() {
 
 pipeline {
   agent {
-    kubernetes { // Define the podTemplate for use with Jenkins
-      label 'jenkins-npm-sidecars'  // The label is arbitrary and can be whatever makes sense to be descriptive
-      defaultContainer 'jnlp'           // This setting MUST BE 'jnlp'
+    kubernetes { 
+      label 'jenkins-npm-sidecars' 
+      defaultContainer 'jnlp'
       yaml """
 apiVersion: v1
 kind: Pod
 metadata:
   labels:
-    pod-template: jenkins-slave-sidecars    # An arbitrary label which can be used to help identify the pod template when running
+    pod-template: jenkins-slave-sidecars
 spec:
   containers:
-  - name: jenkins-slave-mvn
-    image: docker-registry.default.svc:5000/labs-ci-cd/jenkins-slave-mvn
-    command:
-    - cat
-    tty: true
   - name: twistlock-scanner
     image: docker-registry.default.svc:5000/labs-ci-cd/twistlock-scanner
     command:
