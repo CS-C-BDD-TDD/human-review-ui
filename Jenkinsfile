@@ -22,9 +22,9 @@ pipeline {
             parallel {
                 stage('Update NPM') {
                     steps {
-                        sh 'mkdir tmp/.npm-global'
-                        sh 'npm config set prefix "tmp/.npm-global"'
-                        sh 'export PATH=tmp/.npm-global/bin:$PATH'
+                        sh 'mkdir /tmp/.npm-global'
+                        sh 'npm config set prefix "/tmp/.npm-global"'
+                        sh 'export PATH=/tmp/.npm-global/bin:$PATH'
                         sh 'source ~/.profile'
                         sh 'npm install -g npm'
                     }
