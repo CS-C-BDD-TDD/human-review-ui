@@ -22,8 +22,7 @@ pipeline {
             parallel {
                 stage('Update NPM') {
                     steps {
-                        sh 'chown -R $(whoami) /home/jenkins'
-                        sh 'npm install -g npm'
+                        sh 'npm install -g node@latest --unsafe-perm'
                     }
                 }
             }
