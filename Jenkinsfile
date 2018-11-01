@@ -22,8 +22,7 @@ pipeline {
             parallel {
                 stage('Update NPM') {
                     steps {
-                        sh 'npm cache clear --force'
-                        sh 'npm install -g node@latest --unsafe-perm'
+                        sh 'npm install -g --unsafe-perm=true --allow-root'
                     }
                 }
             }
