@@ -22,6 +22,7 @@ pipeline {
             parallel {
                 stage('Update NPM') {
                     steps {
+                        sh 'npm cache clear --force'
                         sh 'npm install -g node@latest --unsafe-perm'
                     }
                 }
