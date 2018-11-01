@@ -6,7 +6,6 @@
         :glossy="$q.theme === 'mat'"
         :inverted="$q.theme === 'ios'"
       >
-
         <q-toolbar-title>
           YellowDog
         </q-toolbar-title>

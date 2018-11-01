@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import DefaultLayout from './layouts/Default.vue';
 import LogIn from './views/LogIn.vue';
-import HumanReview from './views/HumanReview.vue';
+import Pending from './views/Pending.vue';
 
 Vue.use(Router);
 
@@ -17,9 +17,9 @@ export default new Router({
           name: 'login',
           component: LogIn,
         }, {
-          path: '/humanreview',
-          name: 'humanreview',
-          component: HumanReview,
+          path: '/pending',
+          name: 'pending',
+          component: Pending,
         },
       ],
     },
