@@ -17,6 +17,25 @@ pipeline {
         PROJECT_NAME = 'human-review-ui'
         KUBERNETES_NAMESPACE = "${ciProject}"
     }
+    agent {
+    kubernetes {
+      label 'jenkins-twistlock-sidecars'
+      defaultContainer 'jnlp'
+      yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    pod-template: jenkins-slave-sidecars
+spec:
+  - name: twistlock-scanner
+    image: docker-registry.default.svc:5000/labs-ci-cd/twistlock-scanner
+    command:
+    - cat
+    tty: true
+"""
+    }
+  }
     stages {
         stage('Quality And Security') {
             parallel {
