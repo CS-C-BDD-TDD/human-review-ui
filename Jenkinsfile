@@ -22,6 +22,7 @@ pipeline {
             parallel {
                 stage('Dependency Check') {
                     steps {
+                        sh 'npm config set cache /tmp'
                         sh 'npm audit --json | npm-audit-html -o npm-audit-report.html'
                         publishHTML(target: [
                             reportDir             : './',
