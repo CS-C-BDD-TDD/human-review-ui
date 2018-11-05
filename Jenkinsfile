@@ -10,18 +10,15 @@ openshift.withCluster() {
 }
 
 pipeline {
-    agent {
-        label 'jenkins-slave-npm'
-    }
     environment {
         PROJECT_NAME = 'human-review-ui'
         KUBERNETES_NAMESPACE = "${ciProject}"
     }
     agent {
-    kubernetes {
-      label 'jenkins-twistlock-sidecars'
-      defaultContainer 'jnlp'
-      yaml """
+        kubernetes {
+            label 'jenkins-twistlock-sidecars'
+            defaultContainer 'jnlp'
+            yaml """
 apiVersion: v1
 kind: Pod
 metadata:
@@ -33,48 +30,55 @@ spec:
     command:
     - cat
     tty: true
+  - name: jenkins-slave-npm
+    image: docker-registry.default.svc:5000/labs-ci-cd/jenkins-slave-npm
+    tty: true
 """
+        }
     }
-  }
     stages {
         stage('Quality And Security') {
             parallel {
                 stage('Dependency Check') {
                     steps {
-                        sh 'npm config set cache /tmp'
-                        sh 'npm audit --json | npm-audit-html -o npm-audit-report.html'
-                        publishHTML(target: [
-                            reportDir             : './',
-                            reportFiles           : 'npm-audit-report.html',
-                            reportName            : 'NPM Audit Report',
-                            keepAll               : true,
-                            alwaysLinkToLastBuild : true,
-                            allowMissing          : true
-                        ])
-                    sh 'npm-audit-ci-wrapper -t high --ignore-dev-dependencies'
+                        container ('twistlock-scanner') {
+                            sh 'npm config set cache /tmp'
+                            sh 'npm audit --json | npm-audit-html -o npm-audit-report.html'
+                            publishHTML(target: [
+                                reportDir             : './',
+                                reportFiles           : 'npm-audit-report.html',
+                                reportName            : 'NPM Audit Report',
+                                keepAll               : true,
+                                alwaysLinkToLastBuild : true,
+                                allowMissing          : true
+                            ])
+                            sh 'npm-audit-ci-wrapper -t high --ignore-dev-dependencies'
+                        }
                     }
                 }
                 stage('Compile & Test') {
                     steps {
-                        sh 'npm --registry http://nexus-labs-ci-cd.apps.domino.rht-labs.com/repository/npm-group/ install'
-                        sh 'npm run test:unit'
-                        sh 'npm run build'
-                        publishHTML(target: [
-                            reportDir             : './',
-                            reportFiles           : 'test-report.html',
-                            reportName            : 'Jest Unit Test Report',
-                            keepAll               : true,
-                            alwaysLinkToLastBuild : true,
-                            allowMissing          : true
-                        ])
-                        publishHTML(target: [
-                            reportDir             : 'coverage/lcov-report',
-                            reportFiles           : 'index.html',
-                            reportName            : 'Jest Test Coverage Report',
-                            keepAll               : true,
-                            alwaysLinkToLastBuild : true,
-                            allowMissing          : true
-                        ])
+                        container ('jenkins-slave-npm') {
+                            sh 'npm --registry http://nexus-labs-ci-cd.apps.domino.rht-labs.com/repository/npm-group/ install'
+                            sh 'npm run test:unit'
+                            sh 'npm run build'
+                            publishHTML(target: [
+                                reportDir             : './',
+                                reportFiles           : 'test-report.html',
+                                reportName            : 'Jest Unit Test Report',
+                                keepAll               : true,
+                                alwaysLinkToLastBuild : true,
+                                allowMissing          : true
+                            ])
+                            publishHTML(target: [
+                                reportDir             : 'coverage/lcov-report',
+                                reportFiles           : 'index.html',
+                                reportName            : 'Jest Test Coverage Report',
+                                keepAll               : true,
+                                alwaysLinkToLastBuild : true,
+                                allowMissing          : true
+                            ])
+                        }
                     }
                 }
                 stage('Ensure SonarQube Webhook is configured') {
@@ -97,23 +101,27 @@ spec:
         }
         stage('Wait for SonarQube Quality Gate') {
             steps {
-                script {
-                    withSonarQubeEnv('sonar') {
-                        sh 'unset JAVA_TOOL_OPTIONS; ./sonar-scanner'
-                    }
-                    def qualitygate = waitForQualityGate()
-                    if (qualitygate.status != "OK") {
-                        error "Pipeline aborted due to quality gate failure: ${qualitygate.status}"
+                container ('jenkins-slave-npm') {
+                    script {
+                        withSonarQubeEnv('sonar') {
+                            sh 'unset JAVA_TOOL_OPTIONS; ./sonar-scanner'
+                        }
+                        def qualitygate = waitForQualityGate()
+                        if (qualitygate.status != "OK") {
+                            error "Pipeline aborted due to quality gate failure: ${qualitygate.status}"
+                        }
                     }
                 }
             }
         }
         stage('Build Image') {
             steps {
-                script {
-                    openshift.withCluster() {
-                        openshift.withProject(ciProject) {
-                            openshift.selector('bc', 'vue-app').startBuild("--from-dir=dist/", '--wait')
+                container ('jenkins-slave-npm') {
+                    script {
+                        openshift.withCluster() {
+                            openshift.withProject(ciProject) {
+                                openshift.selector('bc', 'vue-app').startBuild("--from-dir=dist/", '--wait')
+                            }
                         }
                     }
                 }
@@ -121,16 +129,20 @@ spec:
         }
         stage('Twistlock Scan') {
             steps{
-                script {
-                    twistlockScan ca: '', cert: '', compliancePolicy: 'warn', dockerAddress: 'unix:///var/run/docker.sock', gracePeriodDays: 0, ignoreImageBuildTime: true, image: 'labs-test/vue-app', key: '', logLevel: 'true', policy: 'warn', requirePackageUpdate: false, timeout: 10
-                       }
-                 }
+                container ('twistlock-scanner') {
+                    script {
+                        twistlockScan ca: '', cert: '', compliancePolicy: 'warn', dockerAddress: 'unix:///var/run/docker.sock', gracePeriodDays: 0, ignoreImageBuildTime: true, image: 'labs-test/vue-app', key: '', logLevel: 'true', policy: 'warn', requirePackageUpdate: false, timeout: 10
+                        }
+                }
+            }
         }
         stage ('Twistlock Publish') {
             steps{
-                script {
-            twistlockPublish ca: '', cert: '', dockerAddress: 'unix:///var/run/docker.sock', ignoreImageBuildTime: true, image: 'labs-test/vue-app', key: '', logLevel: 'true', timeout: 10
-                       }
+                container ('twistlock-scanner') {
+                    script {
+                        twistlockPublish ca: '', cert: '', dockerAddress: 'unix:///var/run/docker.sock', ignoreImageBuildTime: true, image: 'labs-test/vue-app', key: '', logLevel: 'true', timeout: 10
+                        }
+                }
             }
         }
         stage('Promote to TEST') {
