@@ -32,7 +32,7 @@ module.exports =
           includeFailureMsg: true,
           includeConsoleLog: true,
           theme: "darkTheme",
-          outputPath: "reports"
+          outputPath: "unit-test-reports/index.html"
         }
       ]
     ],
