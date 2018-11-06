@@ -30,7 +30,6 @@ spec:
     image: docker-registry.default.svc:5000/labs-ci-cd/twistlock-scanner
     tty: true
     command:
-    - /usr/local/bin/run-jnlp-client
     - /bin/cat
   - name: jenkins-slave-npm
     image: docker-registry.default.svc:5000/labs-ci-cd/jenkins-slave-npm
