@@ -45,7 +45,6 @@ spec:
                 stage('Dependency Check') {
                     steps {
                         container ('jenkins-slave-npm') {
-                            sh 'npm config set cache /tmp'
                             sh 'npm audit --json | npm-audit-html -o npm-audit-report.html'
                             publishHTML(target: [
                                 reportDir             : './',
