@@ -28,14 +28,12 @@ spec:
   containers:
   - name: twistlock-scanner
     image: docker-registry.default.svc:5000/labs-ci-cd/twistlock-scanner
-    command:
-    - cat
     tty: true
+    args: ['${computer.jnlpmac}', '${computer.name}']
   - name: jenkins-slave-npm
     image: docker-registry.default.svc:5000/labs-ci-cd/jenkins-slave-npm
-    command:
-    - cat
     tty: true
+    args: ['${computer.jnlpmac}', '${computer.name}']
 """
         }
     }
