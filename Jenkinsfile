@@ -44,7 +44,6 @@ spec:
             parallel {
                 stage('Dependency Check') {
                     steps {
-                        sh 'npm install -g sonar-scanner npm-audit-html npm-audit-ci-wrapper'
                         sh 'npm config set cache /tmp'
                         sh 'npm audit --json | npm-audit-html -o npm-audit-report.html'
                         publishHTML(target: [
@@ -103,7 +102,7 @@ spec:
             steps {
                 script {
                     withSonarQubeEnv('sonar') {
-                        sh 'unset JAVA_TOOL_OPTIONS; export PATH=${PATH}:/usr/lib/jvm/java-1.8.0-openjdk/bin; sonar-scanner'
+                        sh 'unset JAVA_TOOL_OPTIONS; sonar-scanner'
                     }
                     def qualitygate = waitForQualityGate()
                     if (qualitygate.status != "OK") {
