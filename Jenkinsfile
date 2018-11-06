@@ -10,12 +10,12 @@ openshift.withCluster() {
 }
 
 pipeline {
-    agent {
-        label 'jenkins-slave-npm'
-    }
     environment {
         PROJECT_NAME = 'human-review-ui'
         KUBERNETES_NAMESPACE = "${ciProject}"
+    }
+    agent {
+        label 'jenkins-slave-npm'
     }
     stages {
         stage('Quality And Security') {
@@ -23,16 +23,17 @@ pipeline {
                 stage('Dependency Check') {
                     steps {
                         sh 'npm config set cache /tmp'
-                        sh 'npm audit --json | /home/jenkins/.npm-global/bin/npm-audit-html -o npm-audit-report.html'
+                        sh 'mkdir audit-reports'
+                        sh 'npm audit --json | /home/jenkins/.npm-global/bin/npm-audit-html -o audit-reports/npm-audit-report.html'
                         publishHTML(target: [
-                            reportDir             : './',
+                            reportDir             : 'audit-reports',
                             reportFiles           : 'npm-audit-report.html',
                             reportName            : 'NPM Audit Report',
                             keepAll               : true,
                             alwaysLinkToLastBuild : true,
                             allowMissing          : true
                         ])
-                    sh '/home/jenkins/.npm-global/bin/npm-audit-ci-wrapper -t high --ignore-dev-dependencies'
+                        sh '/home/jenkins/.npm-global/bin/npm-audit-ci-wrapper -t high --ignore-dev-dependencies'
                     }
                 }
                 stage('Compile & Test') {
@@ -41,8 +42,8 @@ pipeline {
                         sh 'npm run test:unit'
                         sh 'npm run build'
                         publishHTML(target: [
-                            reportDir             : './',
-                            reportFiles           : 'test-report.html',
+                            reportDir             : 'unit-test-reports',
+                            reportFiles           : 'index.html',
                             reportName            : 'Jest Unit Test Report',
                             keepAll               : true,
                             alwaysLinkToLastBuild : true,
@@ -70,7 +71,7 @@ pipeline {
                     }
                     steps {
                         withSonarQubeEnv('sonar') {
-                            sh "curl -X POST -u \"${SONAR_AUTH_TOKEN}:\" -F \"name=Jenkins\" -F \"url=http://jenkins/sonarqube-webhook/\" http://sonarqube:9000/api/webhooks/create"
+                            sh "/usr/bin/curl -X POST -u \"${SONAR_AUTH_TOKEN}:\" -F \"name=Jenkins\" -F \"url=http://jenkins/sonarqube-webhook/\" http://sonarqube:9000/api/webhooks/create"
                         }
                     }
                 }
@@ -98,20 +99,6 @@ pipeline {
                         }
                     }
                 }
-            }
-        }
-        stage('Twistlock Scan') {
-            steps{
-                script {
-                    twistlockScan ca: '', cert: '', compliancePolicy: 'warn', dockerAddress: 'unix:///var/run/docker.sock', gracePeriodDays: 0, ignoreImageBuildTime: true, image: 'labs-test/vue-app', key: '', logLevel: 'true', policy: 'warn', requirePackageUpdate: false, timeout: 10
-                       }
-                 }
-        }
-        stage ('Twistlock Publish') {
-            steps{
-                script {
-            twistlockPublish ca: '', cert: '', dockerAddress: 'unix:///var/run/docker.sock', ignoreImageBuildTime: true, image: 'labs-test/vue-app', key: '', logLevel: 'true', timeout: 10
-                       }
             }
         }
         stage('Promote to TEST') {
