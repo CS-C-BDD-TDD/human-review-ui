@@ -30,7 +30,7 @@ pipeline {
                         sh 'npm config set cache /tmp'
                         sh 'npm audit --json | /home/jenkins/.npm-global/bin/npm-audit-html -o reports/npm-audit-report.html'
                         publishHTML(target: [
-                            reportDir             : 'reports',
+                            reportDir             : 'audit-reports',
                             reportFiles           : 'npm-audit-report.html',
                             reportName            : 'NPM Audit Report',
                             keepAll               : true,
@@ -46,8 +46,8 @@ pipeline {
                         sh 'npm run test:unit'
                         sh 'npm run build'
                         publishHTML(target: [
-                            reportDir             : 'reports',
-                            reportFiles           : 'test-report.html',
+                            reportDir             : 'unit-test-reports',
+                            reportFiles           : 'index.html',
                             reportName            : 'Jest Unit Test Report',
                             keepAll               : true,
                             alwaysLinkToLastBuild : true,
