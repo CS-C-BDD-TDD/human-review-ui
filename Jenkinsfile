@@ -95,8 +95,10 @@ spec:
                         }
                     }
                     steps {
-                        withSonarQubeEnv('sonar') {
-                            sh "curl -X POST -u \"${SONAR_AUTH_TOKEN}:\" -F \"name=Jenkins\" -F \"url=http://jenkins/sonarqube-webhook/\" http://sonarqube:9000/api/webhooks/create"
+                        container ('jenkins-slave-npm') {
+                            withSonarQubeEnv('sonar') {
+                                sh "curl -X POST -u \"${SONAR_AUTH_TOKEN}:\" -F \"name=Jenkins\" -F \"url=http://jenkins/sonarqube-webhook/\" http://sonarqube:9000/api/webhooks/create"
+                            }
                         }
                     }
                 }
