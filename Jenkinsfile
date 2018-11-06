@@ -33,6 +33,8 @@ spec:
     tty: true
   - name: jenkins-slave-npm
     image: docker-registry.default.svc:5000/labs-ci-cd/jenkins-slave-npm
+    command:
+    - cat
     tty: true
 """
         }
@@ -133,7 +135,7 @@ spec:
                 container ('twistlock-scanner') {
                     script {
                         twistlockScan ca: '', cert: '', compliancePolicy: 'warn', dockerAddress: 'unix:///var/run/docker.sock', gracePeriodDays: 0, ignoreImageBuildTime: true, image: 'labs-test/vue-app', key: '', logLevel: 'true', policy: 'warn', requirePackageUpdate: false, timeout: 10
-                        }
+                    }
                 }
             }
         }
@@ -142,7 +144,7 @@ spec:
                 container ('twistlock-scanner') {
                     script {
                         twistlockPublish ca: '', cert: '', dockerAddress: 'unix:///var/run/docker.sock', ignoreImageBuildTime: true, image: 'labs-test/vue-app', key: '', logLevel: 'true', timeout: 10
-                        }
+                    }
                 }
             }
         }
