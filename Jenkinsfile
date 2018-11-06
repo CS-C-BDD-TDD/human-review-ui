@@ -15,29 +15,7 @@ pipeline {
         KUBERNETES_NAMESPACE = "${ciProject}"
     }
     agent {
-        kubernetes {
-            label 'jenkins-twistlock-sidecars'
-            defaultContainer 'jenkins-slave-npm'
-            yaml """
-apiVersion: v1
-kind: Pod
-metadata:
-  labels:
-    pod-template: jenkins-slave-sidecars
-spec:
-  containers:
-  - name: twistlock-scanner
-    image: docker-registry.default.svc:5000/labs-ci-cd/twistlock-scanner
-    tty: true
-    command:
-    - /bin/cat
-  - name: jenkins-slave-npm
-    image: docker-registry.default.svc:5000/labs-ci-cd/jenkins-slave-npm
-    tty: true
-    command:
-    - /bin/cat
-"""
-        }
+        label 'jenkins-slave-npm'
     }
     stages {
         stage('Quality And Security') {
