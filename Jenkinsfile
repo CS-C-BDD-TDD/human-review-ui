@@ -33,7 +33,7 @@ spec:
   - name: jenkins-slave-npm
     image: docker-registry.default.svc:5000/labs-ci-cd/jenkins-slave-npm
     tty: true
-    args: ['${computer.jnlpmac}', '${computer.name}']
+    args: ['\${computer.jnlpmac}', '\${computer.name}']
 """
         }
     }
