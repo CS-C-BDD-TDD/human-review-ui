@@ -17,7 +17,7 @@ pipeline {
     agent {
         kubernetes {
             label 'jenkins-twistlock-sidecars'
-            defaultContainer 'jnlp'
+            defaultContainer 'jenkins-slave-npm'
             yaml """
 apiVersion: v1
 kind: Pod
@@ -44,64 +44,56 @@ spec:
             parallel {
                 stage('Dependency Check') {
                     steps {
-                        container ('jenkins-slave-npm') {
-                            sh 'npm install -g npm-audit-html npm-audit-ci-wrapper'
-                            sh 'npm config set cache /tmp'
-                            sh 'npm audit --json | npm-audit-html -o npm-audit-report.html'
-                            publishHTML(target: [
-                                reportDir             : './',
-                                reportFiles           : 'npm-audit-report.html',
-                                reportName            : 'NPM Audit Report',
-                                keepAll               : true,
-                                alwaysLinkToLastBuild : true,
-                                allowMissing          : true
-                            ])
-                            sh 'npm-audit-ci-wrapper -t high --ignore-dev-dependencies'
-                        }
+                        sh 'npm install -g npm-audit-html npm-audit-ci-wrapper'
+                        sh 'npm config set cache /tmp'
+                        sh 'npm audit --json | npm-audit-html -o npm-audit-report.html'
+                        publishHTML(target: [
+                            reportDir             : './',
+                            reportFiles           : 'npm-audit-report.html',
+                            reportName            : 'NPM Audit Report',
+                            keepAll               : true,
+                            alwaysLinkToLastBuild : true,
+                            allowMissing          : true
+                        ])
+                        sh 'npm-audit-ci-wrapper -t high --ignore-dev-dependencies'
                     }
                 }
                 stage('Compile & Test') {
                     steps {
-                        container ('jenkins-slave-npm') {
-                            sh 'npm --registry http://nexus-labs-ci-cd.apps.domino.rht-labs.com/repository/npm-group/ install'
-                            sh 'npm run test:unit'
-                            sh 'npm run build'
-                            publishHTML(target: [
-                                reportDir             : './',
-                                reportFiles           : 'test-report.html',
-                                reportName            : 'Jest Unit Test Report',
-                                keepAll               : true,
-                                alwaysLinkToLastBuild : true,
-                                allowMissing          : true
-                            ])
-                            publishHTML(target: [
-                                reportDir             : 'coverage/lcov-report',
-                                reportFiles           : 'index.html',
-                                reportName            : 'Jest Test Coverage Report',
-                                keepAll               : true,
-                                alwaysLinkToLastBuild : true,
-                                allowMissing          : true
-                            ])
-                        }
+                        sh 'npm --registry http://nexus-labs-ci-cd.apps.domino.rht-labs.com/repository/npm-group/ install'
+                        sh 'npm run test:unit'
+                        sh 'npm run build'
+                        publishHTML(target: [
+                            reportDir             : './',
+                            reportFiles           : 'test-report.html',
+                            reportName            : 'Jest Unit Test Report',
+                            keepAll               : true,
+                            alwaysLinkToLastBuild : true,
+                            allowMissing          : true
+                        ])
+                        publishHTML(target: [
+                            reportDir             : 'coverage/lcov-report',
+                            reportFiles           : 'index.html',
+                            reportName            : 'Jest Test Coverage Report',
+                            keepAll               : true,
+                            alwaysLinkToLastBuild : true,
+                            allowMissing          : true
+                        ])
                     }
                 }
                 stage('Ensure SonarQube Webhook is configured') {
                     when {
-                        container('jenkins-slave-npm') {
-                            expression {
-                                withSonarQubeEnv('sonar') {
-                                    def retVal = sh(returnStatus: true, script: "curl -u \"${SONAR_AUTH_TOKEN}:\" http://sonarqube:9000/api/webhooks/list | grep Jenkins")
-                                    echo "CURL COMMAND: ${retVal}"
-                                    return (retVal > 0)
-                                }
+                        expression {
+                            withSonarQubeEnv('sonar') {
+                                def retVal = sh(returnStatus: true, script: "curl -u \"${SONAR_AUTH_TOKEN}:\" http://sonarqube:9000/api/webhooks/list | grep Jenkins")
+                                echo "CURL COMMAND: ${retVal}"
+                                return (retVal > 0)
                             }
                         }
                     }
                     steps {
-                        container ('jenkins-slave-npm') {
-                            withSonarQubeEnv('sonar') {
-                                sh "/usr/bin/curl -X POST -u \"${SONAR_AUTH_TOKEN}:\" -F \"name=Jenkins\" -F \"url=http://jenkins/sonarqube-webhook/\" http://sonarqube:9000/api/webhooks/create"
-                            }
+                        withSonarQubeEnv('sonar') {
+                            sh "/usr/bin/curl -X POST -u \"${SONAR_AUTH_TOKEN}:\" -F \"name=Jenkins\" -F \"url=http://jenkins/sonarqube-webhook/\" http://sonarqube:9000/api/webhooks/create"
                         }
                     }
                 }
@@ -122,12 +114,10 @@ spec:
         }
         stage('Build Image') {
             steps {
-                container ('jenkins-slave-npm') {
-                    script {
-                        openshift.withCluster() {
-                            openshift.withProject(ciProject) {
-                                openshift.selector('bc', 'vue-app').startBuild("--from-dir=dist/", '--wait')
-                            }
+                script {
+                    openshift.withCluster() {
+                        openshift.withProject(ciProject) {
+                            openshift.selector('bc', 'vue-app').startBuild("--from-dir=dist/", '--wait')
                         }
                     }
                 }
