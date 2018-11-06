@@ -45,9 +45,7 @@ spec:
                 stage('Dependency Check') {
                     steps {
                         container ('jenkins-slave-npm') {
-                            sh 'which npm-audit-html'
-                            sh 'which java'
-                            sh 'which curl'
+                            sh 'npm install -g npm-audit-html npm-audit-ci-wrapper'
                             sh 'npm config set cache /tmp'
                             sh 'npm audit --json | npm-audit-html -o npm-audit-report.html'
                             publishHTML(target: [
