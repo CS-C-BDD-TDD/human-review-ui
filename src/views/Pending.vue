@@ -7,7 +7,7 @@
     row-key="id"
     class="bg-white"
   >
-  <q-tr v-for="item in pendingList" slot="body" slot-scope="props" :props="props" >
+  <q-tr slot="body" slot-scope="props" :props="props" >
     <q-td key="id" :props="props">{{ props.row.id }}</q-td>
     <q-td key="stixid" :props="props">{{ props.row.stix_id }}</q-td>
     <q-td key="odate" :props="props">{{ props.row.original_date }}</q-td>
@@ -19,11 +19,11 @@
       <q-popup-edit v-model="props.row.field_value" @save="fieldValueUpdate(props)" buttons>
         <q-input v-model="props.row.field_value" />
     </q-popup-edit>
-    </q-td> 
+    </q-td>
     <q-td key="status" :props="props">{{ props.row.status }}</q-td>
     <q-td key="action" :props="props">
       {{ props.row.action }}
-      <q-select v-model="select" float-label="Select Action" :options="selectOptions"/>
+      <q-select v-model="props.row.select" float-label="Select Action" :options="selectOptions" @change="updateAction"/>
     </q-td>
   </q-tr>
   </q-table>
@@ -51,7 +51,6 @@ export default {
         //console.log(response.data);
         this.pendingList = response.data;
         console.log('######## Size of Pending List: ' + this.pendingList.length + ' #######');
-        this.tableData = this.pendingList;
       }).catch((error) => {
         console.log(error);
       });
@@ -80,8 +79,11 @@ export default {
   }),
 
   methods: {
-    fieldValueUpdate: function(props) {
-      let eventData = {
+    updateAction: function(val, initVal) {
+        this.$emit("updateAction", { stixId: this.stixId, fieldName: this.fieldName, action: this.select });
+    }    
+/*fieldValueUpdate: function(props) {
+    let eventData = {
         id: this.id,
         stixId: this.stix_id,
         originalDate: this.original_date,
@@ -91,11 +93,11 @@ export default {
         fieldValue: this.field_value,
         status: this.status,
         action: this.action,
-      };
-      eventData.fieldValue = props.row.field_value;
-      console.log('#### Initiate fieldValueUpdate ####');
-      console.log('fieldValue', eventData.fieldValue);
-    },
+    };
+    eventData.fieldValue = props.row.field_value;
+    console.log('#### Initiate fieldValueUpdate ####');
+    console.log('fieldValue', eventData.fieldValue);
+}, */
   },
 };
 </script>
