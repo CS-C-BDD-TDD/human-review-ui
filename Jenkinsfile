@@ -44,7 +44,7 @@ spec:
             parallel {
                 stage('Dependency Check') {
                     steps {
-                        sh 'npm install -g npm-audit-html npm-audit-ci-wrapper'
+                        sh 'npm install -g sonar-scanner npm-audit-html npm-audit-ci-wrapper'
                         sh 'npm config set cache /tmp'
                         sh 'npm audit --json | npm-audit-html -o npm-audit-report.html'
                         publishHTML(target: [
