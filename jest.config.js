@@ -31,7 +31,8 @@ module.exports =
           pageTitle: "Test Report",
           includeFailureMsg: true,
           includeConsoleLog: true,
-          theme: "darkTheme"
+          theme: "darkTheme",
+          outputPath: "reports"
         }
       ]
     ],
