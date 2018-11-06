@@ -103,7 +103,7 @@ spec:
             steps {
                 script {
                     withSonarQubeEnv('sonar') {
-                        sh 'unset JAVA_TOOL_OPTIONS; sonar-scanner'
+                        sh 'unset JAVA_TOOL_OPTIONS; export PATH=${PATH}:/usr/lib/jvm/java-1.8.0-openjdk/bin; sonar-scanner'
                     }
                     def qualitygate = waitForQualityGate()
                     if (qualitygate.status != "OK") {
