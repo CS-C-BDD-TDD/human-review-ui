@@ -45,6 +45,7 @@ spec:
                 stage('Dependency Check') {
                     steps {
                         container ('jenkins-slave-npm') {
+                            sh 'npm config set cache /tmp'
                             sh 'npm audit --json | npm-audit-html -o npm-audit-report.html'
                             publishHTML(target: [
                                 reportDir             : './',
@@ -94,10 +95,8 @@ spec:
                         }
                     }
                     steps {
-                        container ('jenkins-slave-npm') {
-                            withSonarQubeEnv('sonar') {
-                                sh "curl -X POST -u \"${SONAR_AUTH_TOKEN}:\" -F \"name=Jenkins\" -F \"url=http://jenkins/sonarqube-webhook/\" http://sonarqube:9000/api/webhooks/create"
-                            }
+                        withSonarQubeEnv('sonar') {
+                            sh "curl -X POST -u \"${SONAR_AUTH_TOKEN}:\" -F \"name=Jenkins\" -F \"url=http://jenkins/sonarqube-webhook/\" http://sonarqube:9000/api/webhooks/create"
                         }
                     }
                 }
@@ -105,15 +104,13 @@ spec:
         }
         stage('Wait for SonarQube Quality Gate') {
             steps {
-                container ('jenkins-slave-npm') {
-                    script {
-                        withSonarQubeEnv('sonar') {
-                            sh 'unset JAVA_TOOL_OPTIONS; ./sonar-scanner'
-                        }
-                        def qualitygate = waitForQualityGate()
-                        if (qualitygate.status != "OK") {
-                            error "Pipeline aborted due to quality gate failure: ${qualitygate.status}"
-                        }
+                script {
+                    withSonarQubeEnv('sonar') {
+                        sh 'unset JAVA_TOOL_OPTIONS; ./sonar-scanner'
+                    }
+                    def qualitygate = waitForQualityGate()
+                    if (qualitygate.status != "OK") {
+                        error "Pipeline aborted due to quality gate failure: ${qualitygate.status}"
                     }
                 }
             }
