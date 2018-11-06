@@ -18,13 +18,19 @@ pipeline {
         label 'jenkins-slave-npm'
     }
     stages {
+        stage('Create Report Dir') {
+            steps {
+                sh 'mkdir reports'
+            }
+        }
         stage('Quality And Security') {
             parallel {
                 stage('Dependency Check') {
                     steps {
                         sh 'npm config set cache /tmp'
-                        sh 'npm audit --json | /home/jenkins/.npm-global/bin/npm-audit-html -o npm-audit-report.html'
+                        sh 'npm audit --json | /home/jenkins/.npm-global/bin/npm-audit-html -o reports/npm-audit-report.html'
                         publishHTML(target: [
+                            reportDir             : 'reports'
                             reportFiles           : 'npm-audit-report.html',
                             reportName            : 'NPM Audit Report',
                             keepAll               : true,
@@ -40,6 +46,7 @@ pipeline {
                         sh 'npm run test:unit'
                         sh 'npm run build'
                         publishHTML(target: [
+                            reportDir             : 'reports'
                             reportFiles           : 'test-report.html',
                             reportName            : 'Jest Unit Test Report',
                             keepAll               : true,
