@@ -45,7 +45,7 @@ spec:
                 stage('Dependency Check') {
                     steps {
                         sh 'npm config set cache /tmp'
-                        sh 'npm audit --json | npm-audit-html -o npm-audit-report.html'
+                        sh 'npm audit --json | /home/jenkins/.npm-global/bin/npm-audit-html -o npm-audit-report.html'
                         publishHTML(target: [
                             reportDir             : './',
                             reportFiles           : 'npm-audit-report.html',
@@ -54,7 +54,7 @@ spec:
                             alwaysLinkToLastBuild : true,
                             allowMissing          : true
                         ])
-                        sh 'npm-audit-ci-wrapper -t high --ignore-dev-dependencies'
+                        sh '/home/jenkins/.npm-global/bin/npm-audit-ci-wrapper -t high --ignore-dev-dependencies'
                     }
                 }
                 stage('Compile & Test') {
@@ -102,7 +102,7 @@ spec:
             steps {
                 script {
                     withSonarQubeEnv('sonar') {
-                        sh 'unset JAVA_TOOL_OPTIONS; sonar-scanner'
+                        sh 'unset JAVA_TOOL_OPTIONS; /home/jenkins/.npm-global/bin/sonar-scanner'
                     }
                     def qualitygate = waitForQualityGate()
                     if (qualitygate.status != "OK") {
