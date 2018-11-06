@@ -42,7 +42,7 @@ spec:
             parallel {
                 stage('Dependency Check') {
                     steps {
-                        container ('twistlock-scanner') {
+                        container ('jenkins-slave-npm') {
                             sh 'npm config set cache /tmp'
                             sh 'npm audit --json | npm-audit-html -o npm-audit-report.html'
                             publishHTML(target: [
