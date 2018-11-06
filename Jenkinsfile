@@ -29,11 +29,11 @@ spec:
   - name: twistlock-scanner
     image: docker-registry.default.svc:5000/labs-ci-cd/twistlock-scanner
     tty: true
-    args: ['${computer.jnlpmac}', '${computer.name}']
+    args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
   - name: jenkins-slave-npm
     image: docker-registry.default.svc:5000/labs-ci-cd/jenkins-slave-npm
     tty: true
-    args: ['\${computer.jnlpmac}', '\${computer.name}']
+    args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
 """
         }
     }
