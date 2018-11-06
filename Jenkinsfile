@@ -89,7 +89,7 @@ spec:
                     when {
                         expression {
                             withSonarQubeEnv('sonar') {
-                                def retVal = sh(returnStatus: true, script: "curl -u \"${SONAR_AUTH_TOKEN}:\" http://sonarqube:9000/api/webhooks/list | grep Jenkins")
+                                def retVal = sh(returnStatus: true, script: "/usr/bin/curl -u \"${SONAR_AUTH_TOKEN}:\" http://sonarqube:9000/api/webhooks/list | grep Jenkins")
                                 echo "CURL COMMAND: ${retVal}"
                                 return (retVal > 0)
                             }
@@ -97,7 +97,7 @@ spec:
                     }
                     steps {
                         withSonarQubeEnv('sonar') {
-                            sh "curl -X POST -u \"${SONAR_AUTH_TOKEN}:\" -F \"name=Jenkins\" -F \"url=http://jenkins/sonarqube-webhook/\" http://sonarqube:9000/api/webhooks/create"
+                            sh "/usr/bin/curl -X POST -u \"${SONAR_AUTH_TOKEN}:\" -F \"name=Jenkins\" -F \"url=http://jenkins/sonarqube-webhook/\" http://sonarqube:9000/api/webhooks/create"
                         }
                     }
                 }
