@@ -35,7 +35,6 @@ spec:
     image: docker-registry.default.svc:5000/labs-ci-cd/jenkins-slave-npm
     tty: true
     command:
-    - /usr/local/bin/run-jnlp-client
     - /bin/cat
 """
         }
@@ -46,6 +45,9 @@ spec:
                 stage('Dependency Check') {
                     steps {
                         container ('jenkins-slave-npm') {
+                            sh 'which npm-audit-html'
+                            sh 'which java'
+                            sh 'which curl'
                             sh 'npm config set cache /tmp'
                             sh 'npm audit --json | npm-audit-html -o npm-audit-report.html'
                             publishHTML(target: [
