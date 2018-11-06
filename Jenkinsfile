@@ -18,11 +18,6 @@ pipeline {
         label 'jenkins-slave-npm'
     }
     stages {
-        stage('Create Report Dir') {
-            steps {
-                sh 'mkdir reports'
-            }
-        }
         stage('Quality And Security') {
             parallel {
                 stage('Dependency Check') {
