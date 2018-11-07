@@ -38,9 +38,9 @@ pipeline {
                 }
                 stage('Compile & Test') {
                     steps {
-                        sh 'npm --registry http://nexus-labs-ci-cd.apps.domino.rht-labs.com/repository/npm-group/ install'
-                        sh 'npm run test:unit'
-                        sh 'npm run build'
+                        sh 'npm --cache /tmp/npm-cache --registry http://nexus-labs-ci-cd.apps.domino.rht-labs.com/repository/npm-group/ install'
+                        sh 'npm --cache /tmp/npm-cache run test:unit'
+                        sh 'npm --cache /tmp/npm-cache run build'
                         publishHTML(target: [
                             reportDir             : 'unit-test-reports',
                             reportFiles           : 'index.html',
