@@ -23,7 +23,7 @@
     <q-td key="status" :props="props">{{ props.row.status }}</q-td>
     <q-td key="action" :props="props">
       {{ props.row.action }}
-      <q-select v-model="props.row.select" float-label="Select Action" :options="selectOptions" @change="updateAction"/>
+      <q-select v-model="props.row.select" float-label="Select Action" :options="selectOptions" @input="updateAction(props.row)"/>
     </q-td>
   </q-tr>
   </q-table>
@@ -38,7 +38,7 @@ export default {
     const config = {
       headers: {
         'Content-Type': 'application/json',
-        'token': token,
+        token: token,
       },
     };
 
@@ -70,18 +70,44 @@ export default {
     ],
     visibleColumns: ['stixid', 'odate', 'type', 'field', 'value', 'status', 'action'],
     selectOptions: [
-      { label: 'Confirm Risk', value: '1' },
-      { label: 'Not PII', value: '2' },
-      { label: 'Redact Field', value: '3' },
+      { label: 'Confirm Risk', value: 'Confirm Risk' },
+      { label: 'Not PII', value: 'Not PII' },
+      { label: 'Redact Field', value: 'Redact' },
     ],
     select: 0,
     pendingList: null,
   }),
 
   methods: {
-    updateAction: function(val, initVal) {
-        this.$emit("updateAction", { stixId: this.stixId, fieldName: this.fieldName, action: this.select });
-    }    
+    updateAction: function(obj, initObj) {
+      const url = '/api/v1/humanreview/' + obj.stix_id + '/' + obj.field_name;
+      const token = this.$route.params.token;
+      const config = {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'token': token,
+        },
+        params: {
+          field_name: obj.field_name,
+          original_value: obj.field_value,
+          accepted_value: obj.field_value,
+          action_type: obj.select,
+        },
+      };
+
+      console.log('#### updateAction ####');
+      console.log('url = ', url);
+      this.$axios.put(url, null, config)
+        .then((response) => {
+          //console.log(response.data);
+          console.log('######## Update Action success #######');
+      }).catch((error) => {
+          console.log('Failed update...');
+          console.log(error);
+      });
+/*       this.$emit('updateAction', { 
+        stixId: obj.stix_id, fieldName: obj.field_name, action: this.select }); */
+    },
 /*fieldValueUpdate: function(props) {
     let eventData = {
         id: this.id,
