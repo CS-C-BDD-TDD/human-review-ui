@@ -16,14 +16,14 @@
     <q-td key="field" :props="props">{{ props.row.field_name }}</q-td>
     <q-td key="value" :props="props">
       {{ props.row.field_value }}
-      <q-popup-edit v-model="props.row.field_value" @save="fieldValueUpdate(props)" buttons>
+      <q-popup-edit v-model="props.row.field_value" @save="updateValues(props.row)" buttons>
         <q-input v-model="props.row.field_value" />
     </q-popup-edit>
     </q-td>
     <q-td key="status" :props="props">{{ props.row.status }}</q-td>
     <q-td key="action" :props="props">
       <q-select v-model="props.row.action" float-label="Select Action" :options="selectOptions"
-        @input="updateAction(props.row)"/>
+        @input="updateValues(props.row)"/>
     </q-td>
   </q-tr>
   </q-table>
@@ -58,9 +58,6 @@ export default {
     this.getPendingList();
   },
 
-  computed: {
-  },
-
   methods: {
     getPendingList: function () {
       const url = '/api/v1/humanreview/pending';
@@ -84,7 +81,7 @@ export default {
           console.log(error);
         });
     },
-    updateAction: function (obj) {
+    updateValues: function (obj) {
       const url = '/api/v1/humanreview/' + obj.stix_id + '/' + obj.field_name;
       const token = this.$route.params.token;
       const config = {
@@ -100,11 +97,15 @@ export default {
         },
       };
 
-      console.log('#### updateAction ####');
+      console.log('#### updateValues ####');
       console.log('url = ', url);
       this.$axios.put(url, null, config)
         .then((response) => {
-          this.getPendingList();
+          if (response.status === 200 || response.status === 202) {
+            this.getPendingList();
+          } else {
+            console.log(response);
+          }
         }).catch((error) => {
           console.log('Failed update...');
           console.log(error);
