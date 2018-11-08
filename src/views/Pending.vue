@@ -22,8 +22,7 @@
     </q-td>
     <q-td key="status" :props="props">{{ props.row.status }}</q-td>
     <q-td key="action" :props="props">
-      {{ props.row.action }}
-      <q-select v-model="props.row.select" float-label="Select Action" :options="selectOptions"
+      <q-select v-model="props.row.action" float-label="Select Action" :options="selectOptions"
         @input="updateAction(props.row)"/>
     </q-td>
   </q-tr>
@@ -52,7 +51,6 @@ export default {
       { label: 'Not PII', value: 'Not PII' },
       { label: 'Redact Field', value: 'Redact' },
     ],
-    select: 0,
     pendingList: null,
   }),
 
@@ -98,7 +96,7 @@ export default {
           field_name: obj.field_name,
           original_value: obj.field_value,
           accepted_value: obj.field_value,
-          action_type: obj.select,
+          action_type: obj.action,
         },
       };
 
