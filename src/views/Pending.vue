@@ -16,14 +16,14 @@
     <q-td key="field" :props="props">{{ props.row.field_name }}</q-td>
     <q-td key="value" :props="props">
       {{ props.row.field_value }}
-      <q-popup-edit v-model="props.row.field_value" @save="updateValues(props.row)" buttons>
+      <q-popup-edit v-model="props.row.field_value" @save="updateValues(props.row, 'Edit')" buttons>
         <q-input v-model="props.row.field_value" />
     </q-popup-edit>
     </q-td>
     <q-td key="status" :props="props">{{ props.row.status }}</q-td>
     <q-td key="action" :props="props">
       <q-select v-model="props.row.action" float-label="Select Action" :options="selectOptions"
-        @input="updateValues(props.row)"/>
+        @input="updateValues(props.row, props.row.action)"/>
     </q-td>
   </q-tr>
   </q-table>
@@ -52,6 +52,7 @@ export default {
       { label: 'Redact Field', value: 'Redact' },
     ],
     pendingList: null,
+    originalReviewItemData: null,
   }),
 
   mounted() {
@@ -76,14 +77,25 @@ export default {
         .then((response) => {
           //console.log(response.data);
           this.pendingList = response.data;
+          this.originalReviewItemData = this.pendingList;
           console.log('######## Size of Pending List: ' + this.pendingList.length + ' #######');
         }).catch((error) => {
           console.log(error);
         });
     },
-    updateValues: function (obj) {
+    updateValues: function (obj, action) {
       const url = '/api/v1/humanreview/' + obj.stix_id + '/' + obj.field_name;
       const token = this.$route.params.token;
+
+/*       let origVal = '';
+      this.originalReviewItemData.forEach((item) => {
+        if (item.id === obj.id) {
+          origVal = item.field_value;
+          console.log(item);
+          console.log(obj.field_value);
+        }
+      }); */
+
       const config = {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -93,12 +105,13 @@ export default {
           field_name: obj.field_name,
           original_value: obj.field_value,
           accepted_value: obj.field_value,
-          action_type: obj.action,
+          action_type: action,
         },
       };
 
       console.log('#### updateValues ####');
       console.log('url = ', url);
+      console.log(config);
       this.$axios.put(url, null, config)
         .then((response) => {
           if (response.status === 200 || response.status === 202) {
