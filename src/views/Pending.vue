@@ -23,7 +23,8 @@
     <q-td key="status" :props="props">{{ props.row.status }}</q-td>
     <q-td key="action" :props="props">
       {{ props.row.action }}
-      <q-select v-model="props.row.select" float-label="Select Action" :options="selectOptions" @input="updateAction(props.row)"/>
+      <q-select v-model="props.row.select" float-label="Select Action" :options="selectOptions"
+        @input="updateAction(props.row)"/>
     </q-td>
   </q-tr>
   </q-table>
@@ -32,29 +33,6 @@
 <script>
 export default {
   name: 'pending',
-  mounted() {
-    const url = '/api/v1/humanreview/pending';
-    const token = this.$route.params.token;
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        token: token,
-      },
-    };
-
-    console.log('######## Pending Page ########');
-    // Access the '$axios' client via the 'this' object and send the request.
-    // We will then recieve a 'Promise' which contains the 'response' object
-    // from the Axios client.
-    this.$axios.get(url, config)
-      .then((response) => {
-        //console.log(response.data);
-        this.pendingList = response.data;
-        console.log('######## Size of Pending List: ' + this.pendingList.length + ' #######');
-      }).catch((error) => {
-        console.log(error);
-      });
-  },
 
   data: () => ({
     columns: [
@@ -78,14 +56,43 @@ export default {
     pendingList: null,
   }),
 
+  mounted() {
+    this.getPendingList();
+  },
+
+  computed: {
+  },
+
   methods: {
-    updateAction: function(obj, initObj) {
+    getPendingList: function () {
+      const url = '/api/v1/humanreview/pending';
+      const token = this.$route.params.token;
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          token: token,
+        },
+      };
+      console.log('######## Pending Page ########');
+      // Access the '$axios' client via the 'this' object and send the request.
+      // We will then recieve a 'Promise' which contains the 'response' object
+      // from the Axios client.
+      this.$axios.get(url, config)
+        .then((response) => {
+          //console.log(response.data);
+          this.pendingList = response.data;
+          console.log('######## Size of Pending List: ' + this.pendingList.length + ' #######');
+        }).catch((error) => {
+          console.log(error);
+        });
+    },
+    updateAction: function (obj) {
       const url = '/api/v1/humanreview/' + obj.stix_id + '/' + obj.field_name;
       const token = this.$route.params.token;
       const config = {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          'token': token,
+          token: token,
         },
         params: {
           field_name: obj.field_name,
@@ -99,31 +106,12 @@ export default {
       console.log('url = ', url);
       this.$axios.put(url, null, config)
         .then((response) => {
-          //console.log(response.data);
-          console.log('######## Update Action success #######');
-      }).catch((error) => {
+          this.getPendingList();
+        }).catch((error) => {
           console.log('Failed update...');
           console.log(error);
-      });
-/*       this.$emit('updateAction', { 
-        stixId: obj.stix_id, fieldName: obj.field_name, action: this.select }); */
+        });
     },
-/*fieldValueUpdate: function(props) {
-    let eventData = {
-        id: this.id,
-        stixId: this.stix_id,
-        originalDate: this.original_date,
-        modifiedDate: this.modified_date,
-        objectType: this.object_type,
-        fieldName: this.field_name,
-        fieldValue: this.field_value,
-        status: this.status,
-        action: this.action,
-    };
-    eventData.fieldValue = props.row.field_value;
-    console.log('#### Initiate fieldValueUpdate ####');
-    console.log('fieldValue', eventData.fieldValue);
-}, */
   },
 };
 </script>
