@@ -9,10 +9,12 @@
           <q-card-main>
             <form>
               <q-field :error="failedLogin">
-                <q-input v-model="username" type="text" @input="resetValue" float-label="User ID" required clearable='true'/>
+                <q-input v-model="username" type="text" @input="resetValue"
+                  float-label="User ID" required clearable/>
               </q-field>
               <q-field :error="failedLogin">
-                <q-input v-model="password" type="password" @input="resetValue" float-label="Password" required clearable="true"/>
+                <q-input v-model="password" type="password" @input="resetValue"
+                  float-label="Password" required clearable/>
               </q-field>
               <q-alert color="red" v-if="failedLogin">
                 Login failed. Please try again.
@@ -41,7 +43,7 @@ export default {
       password: '',
       token: '',
       errmsg: '',
-      failedLogin: false
+      failedLogin: false,
     };
   },
 
@@ -54,7 +56,7 @@ export default {
       const url = '/api/v1/user';
       const requestBody = {
         username: this.username,
-        password: this.password
+        password: this.password,
       };
       // Access the '$axios' client via the 'this' object and send the request. We will then
       // recieve a 'Promise' which contains the 'response' object from the Axios client.
@@ -63,7 +65,7 @@ export default {
           if (response.status === 200) {
             this.token = response.data;
             console.log(JSON.stringify(response.data));
-            this.$router.push({ name: 'humanreview', params: { token: this.token }});
+            this.$router.push({ name: 'pending', params: { token: this.token } });
           } else {
             this.errmsg = response.data;
             this.failedLogin = true;

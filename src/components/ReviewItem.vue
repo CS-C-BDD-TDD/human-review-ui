@@ -1,3 +1,4 @@
+Vue.component('review-item', {
 <template>
     <q-tr>
         <q-td key="stixId">{{ stixId }}</q-td>
@@ -18,6 +19,7 @@
         </q-td>
     </q-tr>
 </template>
+})
 
 <script>
 export default {

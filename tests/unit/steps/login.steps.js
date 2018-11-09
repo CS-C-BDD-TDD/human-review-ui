@@ -56,7 +56,7 @@ defineFeature(feature, test => {
 
     given(/^a mock instance of the Vue router$/, ()=> {
       $router.push = jest.fn((pushOpts) => {
-        expect(pushOpts.name).toEqual('humanreview');
+        expect(pushOpts.name).toEqual('pending');
         expect(pushOpts.params.token).toEqual(TOKEN);   
       })
     });
@@ -104,7 +104,7 @@ defineFeature(feature, test => {
     then('I expect that the user will have been navigated to the HumanReview page', async () => {
       await wrapper.vm.$nextTick();
       expect($router.push).toHaveBeenCalled();
-      expect($router.push).toBeCalledWith({ name: 'humanreview', params: { token: TOKEN } });
+      expect($router.push).toBeCalledWith({ name: 'pending', params: { token: TOKEN } });
     });
 
     then('I expect that the failed login alert is not visible', () => {
