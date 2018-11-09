@@ -26,6 +26,7 @@
         @input="updateValues(props.row, props.row.action)"/>
     </q-td>
     <q-td key="groupaction" :props="props">
+      <q-btn color="primary" label="Disseminate" size="12px" @click="disseminate(props.row.stix_id)"/>
     </q-td>
   </q-tr>
   </q-table>
@@ -127,6 +128,10 @@ export default {
           console.log(error);
         });
     },
+
+    disseminate: function (id) {
+      console.log('##### Disseminate ####' + id);
+    }
   },
 };
 </script>
