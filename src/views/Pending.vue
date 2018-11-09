@@ -7,7 +7,7 @@
     row-key="id"
     class="bg-white"
   >
-  <q-tr v-for="item in pendingList" slot="body" slot-scope="props" :props="props" >
+  <q-tr slot="body" slot-scope="props" :props="props" >
     <q-td key="id" :props="props">{{ props.row.id }}</q-td>
     <q-td key="stixid" :props="props">{{ props.row.stix_id }}</q-td>
     <q-td key="odate" :props="props">{{ props.row.original_date }}</q-td>
@@ -16,14 +16,14 @@
     <q-td key="field" :props="props">{{ props.row.field_name }}</q-td>
     <q-td key="value" :props="props">
       {{ props.row.field_value }}
-      <q-popup-edit v-model="props.row.field_value" @save="fieldValueUpdate(props)" buttons>
+      <q-popup-edit v-model="props.row.field_value" @save="updateValues(props.row, 'Edit')" buttons>
         <q-input v-model="props.row.field_value" />
     </q-popup-edit>
-    </q-td> 
+    </q-td>
     <q-td key="status" :props="props">{{ props.row.status }}</q-td>
     <q-td key="action" :props="props">
-      {{ props.row.action }}
-      <q-select v-model="select" float-label="Select Action" :options="selectOptions"/>
+      <q-select v-model="props.row.action" float-label="Select Action" :options="selectOptions"
+        @input="updateValues(props.row, props.row.action)"/>
     </q-td>
     <q-td key="groupaction" :props="props">
     </q-td>
@@ -34,30 +34,6 @@
 <script>
 export default {
   name: 'pending',
-  mounted() {
-    const url = '/api/v1/humanreview/pending';
-    const token = this.$route.params.token;
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        'token': token,
-      },
-    };
-
-    console.log('######## Pending Page ########');
-    // Access the '$axios' client via the 'this' object and send the request.
-    // We will then recieve a 'Promise' which contains the 'response' object
-    // from the Axios client.
-    this.$axios.get(url, config)
-      .then((response) => {
-        //console.log(response.data);
-        this.pendingList = response.data;
-        console.log('######## Size of Pending List: ' + this.pendingList.length + ' #######');
-        this.tableData = this.pendingList;
-      }).catch((error) => {
-        console.log(error);
-      });
-  },
 
   data: () => ({
     columns: [
@@ -74,30 +50,82 @@ export default {
     ],
     visibleColumns: ['stixid', 'odate', 'type', 'field', 'value', 'status', 'action', 'groupaction'],
     selectOptions: [
-      { label: 'Confirm Risk', value: '1' },
-      { label: 'Not PII', value: '2' },
-      { label: 'Redact Field', value: '3' },
+      { label: 'Confirm Risk', value: 'Confirm Risk' },
+      { label: 'Not PII', value: 'Not PII' },
+      { label: 'Redact Field', value: 'Redact' },
     ],
-    select: 0,
     pendingList: null,
+    originalReviewItemData: null,
   }),
 
+  mounted() {
+    this.getPendingList();
+  },
+
   methods: {
-    fieldValueUpdate: function(props) {
-      let eventData = {
-        id: this.id,
-        stixId: this.stix_id,
-        originalDate: this.original_date,
-        modifiedDate: this.modified_date,
-        objectType: this.object_type,
-        fieldName: this.field_name,
-        fieldValue: this.field_value,
-        status: this.status,
-        action: this.action,
+    getPendingList: function () {
+      const url = '/api/v1/humanreview/pending';
+      const token = this.$route.params.token;
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          token: token,
+        },
       };
-      eventData.fieldValue = props.row.field_value;
-      console.log('#### Initiate fieldValueUpdate ####');
-      console.log('fieldValue', eventData.fieldValue);
+      console.log('######## Pending Page ########');
+      // Access the '$axios' client via the 'this' object and send the request.
+      // We will then recieve a 'Promise' which contains the 'response' object
+      // from the Axios client.
+      this.$axios.get(url, config)
+        .then((response) => {
+          //console.log(response.data);
+          this.pendingList = response.data;
+          this.originalReviewItemData = this.pendingList;
+          console.log('######## Size of Pending List: ' + this.pendingList.length + ' #######');
+        }).catch((error) => {
+          console.log(error);
+        });
+    },
+    updateValues: function (obj, action) {
+      const url = '/api/v1/humanreview/' + obj.stix_id + '/' + obj.field_name;
+      const token = this.$route.params.token;
+
+/*       let origVal = '';
+      this.originalReviewItemData.forEach((item) => {
+        if (item.id === obj.id) {
+          origVal = item.field_value;
+          console.log(item);
+          console.log(obj.field_value);
+        }
+      }); */
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          token: token,
+        },
+        params: {
+          field_name: obj.field_name,
+          original_value: obj.field_value,
+          accepted_value: obj.field_value,
+          action_type: action,
+        },
+      };
+
+      console.log('#### updateValues ####');
+      console.log('url = ', url);
+      console.log(config);
+      this.$axios.put(url, null, config)
+        .then((response) => {
+          if (response.status === 200 || response.status === 202) {
+            this.getPendingList();
+          } else {
+            console.log(response);
+          }
+        }).catch((error) => {
+          console.log('Failed update...');
+          console.log(error);
+        });
     },
   },
 };

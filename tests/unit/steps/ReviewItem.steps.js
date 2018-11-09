@@ -24,11 +24,11 @@ defineFeature(feature, test => {
   });
 
   const TEST_DATA = {
-    stixId: "1",
-    actionDate: "09/15/2018",
-    objectType: "Indicator",
-    fieldName: "Title",
-    fieldValue: "I contain a SSN",
+    stix_id: "1",
+    original_date: "09/15/2018",
+    object_type: "Indicator",
+    field_name: "Title",
+    field_value: "I contain a SSN",
     status: "New"
   };
 
@@ -63,27 +63,27 @@ defineFeature(feature, test => {
 
     then("I should see a Stix Id", () => {
       let td = wrapper.find("td:nth-child(1)");
-      expect(td.html()).toContain(TEST_DATA.stixId);
+      expect(td.html()).toContain(TEST_DATA.stix_id);
     });  
 
     then("I should see an Action Date", () => {
       let td = wrapper.find("td:nth-child(2)");
-      expect(td.html()).toContain(TEST_DATA.actionDate);
+      expect(td.html()).toContain(TEST_DATA.original_date);
     });
 
     then("I should see an Object Type", () => {
       let td = wrapper.find("td:nth-child(3)");
-      expect(td.html()).toContain(TEST_DATA.objectType);
+      expect(td.html()).toContain(TEST_DATA.object_type);
     });
 
     then("I should see a Field Name", () => {
       let td = wrapper.find("td:nth-child(4)");
-      expect(td.html()).toContain(TEST_DATA.fieldName);
+      expect(td.html()).toContain(TEST_DATA.field_name);
     });
 
     then("I should see a Field Value as a Popup Edit component", () => {
       let td = wrapper.find("td:nth-child(5)");
-      expect(td.html()).toContain(TEST_DATA.fieldValue);
+      expect(td.html()).toContain(TEST_DATA.field_value);
     });
 
     then("I should see a Status", () => {
