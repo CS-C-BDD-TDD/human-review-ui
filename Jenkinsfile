@@ -20,22 +20,22 @@ pipeline {
     stages {
         stage('Quality And Security') {
             parallel {
-                // stage('Dependency Check') {
-                //     steps {
-                //         sh 'npm config set cache /tmp'
-                //         sh 'mkdir audit-reports'
-                //         sh 'npm audit --json | /home/jenkins/.npm-global/bin/npm-audit-html -o audit-reports/npm-audit-report.html'
-                //         publishHTML(target: [
-                //             reportDir             : 'audit-reports',
-                //             reportFiles           : 'npm-audit-report.html',
-                //             reportName            : 'NPM Audit Report',
-                //             keepAll               : true,
-                //             alwaysLinkToLastBuild : true,
-                //             allowMissing          : true
-                //         ])
-                //         sh '/home/jenkins/.npm-global/bin/npm-audit-ci-wrapper -t high --ignore-dev-dependencies'
-                //     }
-                // }
+                stage('Dependency Check') {
+                    steps {
+                        sh 'npm config set cache /tmp'
+                        sh 'mkdir audit-reports'
+                        sh 'npm audit --json | /home/jenkins/.npm-global/bin/npm-audit-html -o audit-reports/npm-audit-report.html'
+                        publishHTML(target: [
+                            reportDir             : 'audit-reports',
+                            reportFiles           : 'npm-audit-report.html',
+                            reportName            : 'NPM Audit Report',
+                            keepAll               : true,
+                            alwaysLinkToLastBuild : true,
+                            allowMissing          : true
+                        ])
+                        sh '/home/jenkins/.npm-global/bin/npm-audit-ci-wrapper -t high --ignore-dev-dependencies'
+                    }
+                }
                 stage('Compile & Test') {
                     steps {
                         sh 'npm --cache /tmp/npm-cache --registry http://nexus-labs-ci-cd.apps.domino.rht-labs.com/repository/npm-group/ install'
@@ -77,19 +77,19 @@ pipeline {
                 }
             }
         }
-        // stage('Wait for SonarQube Quality Gate') {
-        //    steps {
-        //        script {
-        //            withSonarQubeEnv('sonar') {
-        //                sh 'unset JAVA_TOOL_OPTIONS; /home/jenkins/.npm-global/bin/sonar-scanner'
-        //            }
-        //            def qualitygate = waitForQualityGate()
-        //            if (qualitygate.status != "OK") {
-        //                error "Pipeline aborted due to quality gate failure: ${qualitygate.status}"
-        //            }
-        //        }
-        //    }
-        // }
+        stage('Wait for SonarQube Quality Gate') {
+           steps {
+               script {
+                   withSonarQubeEnv('sonar') {
+                       sh 'unset JAVA_TOOL_OPTIONS; /home/jenkins/.npm-global/bin/sonar-scanner'
+                   }
+                   def qualitygate = waitForQualityGate()
+                   if (qualitygate.status != "OK") {
+                       error "Pipeline aborted due to quality gate failure: ${qualitygate.status}"
+                   }
+               }
+           }
+        }
         stage('Build Image') {
             steps {
                 script {
