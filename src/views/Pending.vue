@@ -26,7 +26,8 @@
         @input="updateValues(props.row, props.row.action)"/>
     </q-td>
     <q-td key="groupaction" :props="props">
-      <q-btn color="primary" label="Disseminate" size="12px" @click="disseminate(props.row.stix_id)"/>
+      <q-btn color="primary" label="Disseminate" size="12px"
+        @click="performGroupAction(props.row.stix_id, 'Disseminate')"/>
     </q-td>
   </q-tr>
   </q-table>
@@ -44,10 +45,10 @@ export default {
       { name: 'mdate', label: 'Modified Date', align: 'left', field: 'modified_date', sortable: true, style: 'width: 5px' },
       { name: 'type', label: 'Object Type', align: 'left', field: 'object_type', sortable: true, style: 'width: 5px' },
       { name: 'field', label: 'Field', align: 'left', field: 'field_name', sortable: true, style: 'width: 10px' },
-      { name: 'value', label: 'Value', align: 'left', field: 'field_value', sortable: true, style: 'width: 20px' },
+      { name: 'value', label: 'Value', align: 'left', field: 'field_value', sortable: true, style: 'width: 10px' },
       { name: 'status', label: 'Status', align: 'left', field: 'status', sortable: true, style: 'width: 5px' },
       { name: 'action', label: 'Action', align: 'left', field: 'actions', sortable: true, style: 'width: 5px' },
-      { name: 'groupaction', label: 'Group Action', align: 'left', field: 'group_actions', sortable: false, style: 'width: 5px' },
+      { name: 'groupaction', label: 'Group Action', align: 'left', field: 'group_action', sortable: false, style: 'width: 5px' },
     ],
     visibleColumns: ['stixid', 'odate', 'type', 'field', 'value', 'status', 'action', 'groupaction'],
     selectOptions: [
@@ -113,7 +114,7 @@ export default {
         },
       };
 
-      console.log('#### updateValues ####');
+      console.log('######## updateValues ########');
       console.log('url = ', url);
       console.log(config);
       this.$axios.put(url, null, config)
@@ -129,9 +130,35 @@ export default {
         });
     },
 
-    disseminate: function (id) {
-      console.log('##### Disseminate ####' + id);
-    }
+    performGroupAction: function (id, action) {
+      console.log('######## Disseminate ########');
+      const url = '/api/v1/humanreview/' + id;
+      const token = this.$route.params.token;
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          token: token,
+        },
+        params: {
+          stix_id: id,
+          group_action: action,
+        },
+      };
+
+      this.$axios.put(url, null, config)
+        .then((response) => {
+          if( response.status === 200 || response.status === 202) {
+            console.log('GroupAction success!');
+            this.getPendingList();
+          } else {
+            console.log('GroupAction:' + response);
+          }
+        }).catch((error) => {
+          console.error('GroupAction failed.');
+          console.error(error);
+        });
+    },
   },
 };
 </script>
