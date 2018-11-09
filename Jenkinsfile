@@ -77,19 +77,19 @@ pipeline {
                 }
             }
         }
-        stage('Wait for SonarQube Quality Gate') {
-            steps {
-                script {
-                    withSonarQubeEnv('sonar') {
-                        sh 'unset JAVA_TOOL_OPTIONS; /home/jenkins/.npm-global/bin/sonar-scanner'
-                    }
-                    def qualitygate = waitForQualityGate()
-                    if (qualitygate.status != "OK") {
-                        error "Pipeline aborted due to quality gate failure: ${qualitygate.status}"
-                    }
-                }
-            }
-        }
+        // stage('Wait for SonarQube Quality Gate') {
+        //    steps {
+        //        script {
+        //            withSonarQubeEnv('sonar') {
+        //                sh 'unset JAVA_TOOL_OPTIONS; /home/jenkins/.npm-global/bin/sonar-scanner'
+        //            }
+        //            def qualitygate = waitForQualityGate()
+        //            if (qualitygate.status != "OK") {
+        //                error "Pipeline aborted due to quality gate failure: ${qualitygate.status}"
+        //            }
+        //        }
+        //    }
+        // }
         stage('Build Image') {
             steps {
                 script {
