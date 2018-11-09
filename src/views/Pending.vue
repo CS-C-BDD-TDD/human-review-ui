@@ -25,6 +25,8 @@
       <q-select v-model="props.row.action" float-label="Select Action" :options="selectOptions"
         @input="updateValues(props.row, props.row.action)"/>
     </q-td>
+    <q-td key="groupaction" :props="props">
+    </q-td>
   </q-tr>
   </q-table>
 </template>
@@ -36,16 +38,17 @@ export default {
   data: () => ({
     columns: [
       { name: 'id', label: 'Id', align: 'left', field: 'id', sortable: true, style: 'width: 5px' },       
-      { name: 'stixid', required: true, label: 'Stix Id', align: 'left', field: 'stix_id', sortable: true, style: 'width: 20px' },
-      { name: 'odate', label: 'Original Date', align: 'left', field: 'original_date', sortable: true, style: 'width: 15px' },
-      { name: 'mdate', label: 'Modified Date', align: 'left', field: 'modified_date', sortable: true, style: 'width: 15px' },
-      { name: 'type', label: 'Object Type', align: 'left', field: 'object_type', sortable: true, style: 'width: 10px' },
+      { name: 'stixid', required: true, label: 'Stix Id', align: 'left', field: 'stix_id', sortable: true, style: 'width: 10px' },
+      { name: 'odate', label: 'Original Date', align: 'left', field: 'original_date', sortable: true, style: 'width: 5px' },
+      { name: 'mdate', label: 'Modified Date', align: 'left', field: 'modified_date', sortable: true, style: 'width: 5px' },
+      { name: 'type', label: 'Object Type', align: 'left', field: 'object_type', sortable: true, style: 'width: 5px' },
       { name: 'field', label: 'Field', align: 'left', field: 'field_name', sortable: true, style: 'width: 10px' },
-      { name: 'value', label: 'Value', align: 'left', field: 'field_value', sortable: true, style: 'width: 25px' },
-      { name: 'status', label: 'Status', align: 'left', field: 'status', sortable: true, style: 'width: 10px' },
-      { name: 'action', label: 'Action', align: 'left', field: 'actions', sortable: true, style: 'width: 20px' },
+      { name: 'value', label: 'Value', align: 'left', field: 'field_value', sortable: true, style: 'width: 20px' },
+      { name: 'status', label: 'Status', align: 'left', field: 'status', sortable: true, style: 'width: 5px' },
+      { name: 'action', label: 'Action', align: 'left', field: 'actions', sortable: true, style: 'width: 5px' },
+      { name: 'groupaction', label: 'Group Action', align: 'left', field: 'group_actions', sortable: false, style: 'width: 5px' },
     ],
-    visibleColumns: ['stixid', 'odate', 'type', 'field', 'value', 'status', 'action'],
+    visibleColumns: ['stixid', 'odate', 'type', 'field', 'value', 'status', 'action', 'groupaction'],
     selectOptions: [
       { label: 'Confirm Risk', value: 'Confirm Risk' },
       { label: 'Not PII', value: 'Not PII' },
