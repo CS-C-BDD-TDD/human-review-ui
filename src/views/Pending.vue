@@ -1,5 +1,4 @@
 <template>
-  <q-page class="bg-light">
     <q-table
      title="Pending Messages"
      :data="pendingList"
@@ -10,12 +9,15 @@
    >
    <q-tr slot="body" slot-scope="props" :props="props" >
      <q-td key="id" :props="props">{{ props.row.id }}</q-td>
-     <q-td key="stixid" :props="props">{{ props.row.stix_id }}</q-td>
+     <q-td key="stixid" :props="props"
+      :style="{width: '300px', whiteSpace: 'normal'}">
+      {{ props.row.stix_id }}</q-td>
      <q-td key="odate" :props="props">{{ props.row.original_date }}</q-td>
      <q-td key="mdate" :props="props">{{ props.row.modified_date }}</q-td>
      <q-td key="type" :props="props">{{ props.row.object_type }}</q-td>
      <q-td key="field" :props="props">{{ props.row.field_name }}</q-td>
-     <q-td key="value" :props="props">
+     <q-td key="value" :props="props"
+       :style="{width: '250px', whiteSpace: 'normal'}">
        {{ props.row.field_value }}
       <q-popup-edit v-model="props.row.field_value" @save="updateValues(props.row, 'Edit')" buttons>
         <q-input v-model="props.row.field_value" />
@@ -32,7 +34,6 @@
      </q-td>
    </q-tr>
    </q-table>
-  </q-page>
 </template>
 
 <script>

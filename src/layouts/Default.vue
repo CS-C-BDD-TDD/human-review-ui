@@ -13,7 +13,9 @@
     </q-layout-header>
 
     <q-page-container>
-      <router-view />
+      <q-page class="flex flex-center bg-light" padding>
+        <router-view />
+      </q-page>
     </q-page-container>
   </q-layout>
 </template>

@@ -1,5 +1,4 @@
 <template>
-  <q-page class="flex flex-center bg-light" padding>
     <div class="window-width row justify-center items-start">
         <q-card class="bg-white">
           <q-card-media>
@@ -29,7 +28,6 @@
           </q-card-actions>
         </q-card>
     </div>
-  </q-page>
 </template>
 
 <style>
