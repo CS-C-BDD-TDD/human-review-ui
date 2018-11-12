@@ -58,8 +58,8 @@ export default {
       { label: 'Not PII', value: 'Not PII' },
       { label: 'Redact Field', value: 'Redact' },
     ],
-    pendingList: null,
-    originalReviewItemData: null,
+    pendingList: [],
+    originalReviewItemData: [],
   }),
 
   mounted() {
