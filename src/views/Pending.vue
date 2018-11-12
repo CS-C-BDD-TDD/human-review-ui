@@ -1,36 +1,38 @@
 <template>
-   <q-table
-    title="Pending Messages"
-    :data="pendingList"
-    :columns="columns"
-    :visible-columns="visibleColumns"
-    row-key="id"
-    class="bg-white"
-  >
-  <q-tr slot="body" slot-scope="props" :props="props" >
-    <q-td key="id" :props="props">{{ props.row.id }}</q-td>
-    <q-td key="stixid" :props="props">{{ props.row.stix_id }}</q-td>
-    <q-td key="odate" :props="props">{{ props.row.original_date }}</q-td>
-    <q-td key="mdate" :props="props">{{ props.row.modified_date }}</q-td>
-    <q-td key="type" :props="props">{{ props.row.object_type }}</q-td>
-    <q-td key="field" :props="props">{{ props.row.field_name }}</q-td>
-    <q-td key="value" :props="props">
-      {{ props.row.field_value }}
+  <q-page class="bg-light">
+    <q-table
+     title="Pending Messages"
+     :data="pendingList"
+     :columns="columns"
+     :visible-columns="visibleColumns"
+     row-key="id"
+     class="bg-white"
+   >
+   <q-tr slot="body" slot-scope="props" :props="props" >
+     <q-td key="id" :props="props">{{ props.row.id }}</q-td>
+     <q-td key="stixid" :props="props">{{ props.row.stix_id }}</q-td>
+     <q-td key="odate" :props="props">{{ props.row.original_date }}</q-td>
+     <q-td key="mdate" :props="props">{{ props.row.modified_date }}</q-td>
+     <q-td key="type" :props="props">{{ props.row.object_type }}</q-td>
+     <q-td key="field" :props="props">{{ props.row.field_name }}</q-td>
+     <q-td key="value" :props="props">
+       {{ props.row.field_value }}
       <q-popup-edit v-model="props.row.field_value" @save="updateValues(props.row, 'Edit')" buttons>
         <q-input v-model="props.row.field_value" />
-    </q-popup-edit>
-    </q-td>
-    <q-td key="status" :props="props">{{ props.row.status }}</q-td>
-    <q-td key="action" :props="props">
+      </q-popup-edit>
+     </q-td>
+     <q-td key="status" :props="props">{{ props.row.status }}</q-td>
+     <q-td key="action" :props="props">
       <q-select v-model="props.row.action" float-label="Select Action" :options="selectOptions"
         @input="updateValues(props.row, props.row.action)"/>
-    </q-td>
-    <q-td key="groupaction" :props="props">
+     </q-td>
+     <q-td key="groupaction" :props="props">
       <q-btn color="primary" label="Disseminate" size="12px"
         @click="performGroupAction(props.row.stix_id, 'Disseminate')"/>
-    </q-td>
-  </q-tr>
-  </q-table>
+     </q-td>
+   </q-tr>
+   </q-table>
+  </q-page>
 </template>
 
 <script>
@@ -80,10 +82,9 @@ export default {
       // from the Axios client.
       this.$axios.get(url, config)
         .then((response) => {
-          //console.log(response.data);
           this.pendingList = response.data;
           this.originalReviewItemData = this.pendingList;
-          console.log('######## Size of Pending List: ' + this.pendingList.length + ' #######');
+          console.log('######## Size of Pending List: ', this.pendingList.length, ' #######');
         }).catch((error) => {
           console.log(error);
         });
@@ -91,15 +92,6 @@ export default {
     updateValues: function (obj, action) {
       const url = '/api/v1/humanreview/' + obj.stix_id + '/' + obj.field_name;
       const token = this.$route.params.token;
-
-/*       let origVal = '';
-      this.originalReviewItemData.forEach((item) => {
-        if (item.id === obj.id) {
-          origVal = item.field_value;
-          console.log(item);
-          console.log(obj.field_value);
-        }
-      }); */
 
       const config = {
         headers: {
@@ -148,11 +140,11 @@ export default {
 
       this.$axios.put(url, null, config)
         .then((response) => {
-          if( response.status === 200 || response.status === 202) {
+          if (response.status === 200 || response.status === 202) {
             console.log('GroupAction success!');
             this.getPendingList();
           } else {
-            console.log('GroupAction:' + response);
+            console.log('GroupAction:', response);
           }
         }).catch((error) => {
           console.error('GroupAction failed.');
