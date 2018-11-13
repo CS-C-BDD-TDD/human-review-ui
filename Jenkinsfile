@@ -23,7 +23,7 @@ pipeline {
                 stage('Dependency Check') {
                     steps {
                         sh 'npm config set cache /tmp'
-                        sh 'mkdir audit-reports'
+                        sh 'mkdir -p audit-reports'
                         sh 'npm audit --json | /home/jenkins/.npm-global/bin/npm-audit-html -o audit-reports/npm-audit-report.html'
                         publishHTML(target: [
                             reportDir             : 'audit-reports',
