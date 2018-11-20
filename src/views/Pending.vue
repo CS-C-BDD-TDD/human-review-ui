@@ -44,6 +44,7 @@ export default {
     columns: [
       { name: 'id', label: 'Id', align: 'left', field: 'id', sortable: true, style: 'width: 5px' },       
       { name: 'stixid', required: true, label: 'Stix Id', align: 'left', field: 'stix_id', sortable: true, style: 'width: 10px' },
+      { name: 'location', label: 'Location Id', align: 'left', field: 'field_location' },
       { name: 'odate', label: 'Original Date', align: 'left', field: 'original_date', sortable: true, style: 'width: 5px' },
       { name: 'mdate', label: 'Modified Date', align: 'left', field: 'modified_date', sortable: true, style: 'width: 5px' },
       { name: 'type', label: 'Object Type', align: 'left', field: 'object_type', sortable: true, style: 'width: 5px' },
@@ -90,6 +91,7 @@ export default {
           console.log(error);
         });
     },
+
     updateValues: function (obj, action) {
       const url = '/api/v1/humanreview/' + obj.stix_id + '/' + obj.field_name;
       const token = this.$route.params.token;
@@ -99,18 +101,19 @@ export default {
           'Content-Type': 'application/x-www-form-urlencoded',
           token: token,
         },
-        params: {
-          field_name: obj.field_name,
-          original_value: obj.field_value,
-          accepted_value: obj.field_value,
-          action_type: action,
-        },
+      };
+      const requestBody = {
+        original_value: obj.field_value,
+        field_location: obj.field_location,
+        action_type: action,
+        accepted_value: obj.field_value,
       };
 
+      const qs = require('qs');
       console.log('######## updateValues ########');
       console.log('url = ', url);
       console.log(config);
-      this.$axios.put(url, null, config)
+      this.$axios.put(url, qs.stringify(requestBody), config)
         .then((response) => {
           if (response.status === 200 || response.status === 202) {
             this.getPendingList();
