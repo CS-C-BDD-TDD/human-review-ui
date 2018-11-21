@@ -29,8 +29,10 @@
         @input="updateValues(props.row, props.row.action)"/>
      </q-td>
      <q-td key="groupaction" :props="props">
-      <q-btn color="primary" label="Disseminate" size="12px"
+      <q-btn class="q-ma-sm" color="primary" label="Disseminate" size="10px"
         @click="performGroupAction(props.row.stix_id, 'Disseminate')"/>
+      <q-btn class="q-ma-sm" color="primary" label="Do Not Disseminate" size="10px"
+        @click="performGroupAction(props.row.stix_id, 'Do Not Disseminate')"/>
      </q-td>
    </q-tr>
    </q-table>
@@ -127,7 +129,8 @@ export default {
     },
 
     performGroupAction: function (id, action) {
-      console.log('######## Disseminate ########');
+      console.log('######## Group Action ########');
+      console.log(action);
       const url = '/api/v1/humanreview/' + id;
       const token = this.$route.params.token;
 
@@ -148,7 +151,7 @@ export default {
             console.log('GroupAction success!');
             this.getPendingList();
           } else {
-            console.log('GroupAction:', response);
+            console.log('GroupAction: other than success', response);
           }
         }).catch((error) => {
           console.error('GroupAction failed.');
