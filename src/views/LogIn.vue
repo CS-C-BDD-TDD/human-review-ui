@@ -13,7 +13,7 @@
                   float-label="User ID" required clearable/>
               </q-field>
               <q-field :error="failedLogin">
-                <q-input v-model="password" type="password" @input="resetValue"
+                <q-input v-model="password" type="password" @keydown.enter="login" @input="resetValue"
                   float-label="Password" required clearable/>
               </q-field>
               <q-alert color="red" v-if="failedLogin">
