@@ -4,11 +4,11 @@ Scenario: Displaying a table
   Given a mock instance of Axios and Vue Router
   When  I render the table component
   Then  I should see a Stix Id Column
-# And   I should see an Original Date Column
-# And   I should see a Type Column
-# And   I should see a Field Column
-# And   I should see a Value Column
-# And   I should see a Status Column
+  And   I should see an Original Date Column
+  And   I should see a Type Column
+  And   I should see a Field Column
+  And   I should see a Value Column
+  And   I should see a Status Column
 # And   I should see Action Combo boxes
 
 # Scenario: Modify the value of a table item with an action

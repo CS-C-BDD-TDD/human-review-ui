@@ -145,60 +145,45 @@ defineFeature(feature, test => {
       }
     });
 
-    // then("I should see an Original Date Column", () => {
-    //   let tr = wrapper.find("tr:nth-child(2)");
-    //   expect(tr.html()).toContain(TEST_DATA[0].original_date);
-    //   tr = wrapper.find("tr:nth-child(2)");
-    //   expect(tr.html()).toContain(TEST_DATA[1].original_date);
-    //   tr = wrapper.find("tr:nth-child(2)");
-    //   expect(tr.html()).toContain(TEST_DATA[2].original_date);
-    //   tr = wrapper.find("tr:nth-child(2)");
-    //   expect(tr.html()).toContain(TEST_DATA[3].original_date);
-    // });
+    then("I should see an Original Date Column", () => {
+      for (let i = 1; i <= TEST_DATA.length; i++) {
+        let selector = `table tr:nth-child(${i}) td:nth-child(2)`;
+        let td = wrapper.find(selector);
+        expect(td.html()).toContain(TEST_DATA[i-1].original_date);
+      }
+    });
 
-    // then("I should see a Type Column", () => {
-    //   let tr = wrapper.find("tr:nth-child(4)");
-    //   expect(tr.html()).toContain(TEST_DATA[0].object_type);
-    //   tr = wrapper.find("tr:nth-child(4)");
-    //   expect(tr.html()).toContain(TEST_DATA[1].object_type);
-    //   tr = wrapper.find("tr:nth-child(4)");
-    //   expect(tr.html()).toContain(TEST_DATA[2].object_type);
-    //   tr = wrapper.find("tr:nth-child(4)");
-    //   expect(tr.html()).toContain(TEST_DATA[3].object_type);  
-    // });
+    then("I should see a Type Column", () => {
+      for (let i = 1; i <= TEST_DATA.length; i++) {
+        let selector = `table tr:nth-child(${i}) td:nth-child(3)`;
+        let td = wrapper.find(selector);
+        expect(td.html()).toContain(TEST_DATA[i-1].object_type);
+      }
+    });
 
-    // then("I should see a Field Column", () => {
-    //   let tr = wrapper.find("tr:nth-child(5)");
-    //   expect(tr.html()).toContain(TEST_DATA[0].field_name);
-    //   tr = wrapper.find("tr:nth-child(5)");
-    //   expect(tr.html()).toContain(TEST_DATA[1].field_name);
-    //   tr = wrapper.find("tr:nth-child(5)");
-    //   expect(tr.html()).toContain(TEST_DATA[2].field_name);
-    //   tr = wrapper.find("tr:nth-child(5)");
-    //   expect(tr.html()).toContain(TEST_DATA[3].field_name);
-    // });
+    then("I should see a Field Column", () => {
+      for (let i = 1; i <= TEST_DATA.length; i++) {
+        let selector = `table tr:nth-child(${i}) td:nth-child(4)`;
+        let td = wrapper.find(selector);
+        expect(td.html()).toContain(TEST_DATA[i-1].field_name);
+      }
+    });
 
-    // then("I should see a Value Column", () => {
-    //   let tr = wrapper.find("tr:nth-child(6)");
-    //   expect(tr.html()).toContain(TEST_DATA[0].field_value);
-    //   tr = wrapper.find("tr:nth-child(6)");
-    //   expect(tr.html()).toContain(TEST_DATA[1].field_value);
-    //   tr = wrapper.find("tr:nth-child(6)");
-    //   expect(tr.html()).toContain(TEST_DATA[2].field_value);
-    //   tr = wrapper.find("tr:nth-child(6)");
-    //   expect(tr.html()).toContain(TEST_DATA[3].field_value);     
-    // });
+    then("I should see a Value Column", () => {
+      for (let i = 1; i <= TEST_DATA.length; i++) {
+        let selector = `table tr:nth-child(${i}) td:nth-child(5)`;
+        let td = wrapper.find(selector);
+        expect(td.html()).toContain(TEST_DATA[i-1].field_value);
+      }
+    });
 
-    // then("I should see a Status Column", () => {
-    //   let tr = wrapper.find("tr:nth-child(7)");
-    //   expect(tr.html()).toContain(TEST_DATA[0].status);
-    //   tr = wrapper.find("tr:nth-child(7)");
-    //   expect(tr.html()).toContain(TEST_DATA[1].status);
-    //   tr = wrapper.find("tr:nth-child(7)");
-    //   expect(tr.html()).toContain(TEST_DATA[2].status);
-    //   tr = wrapper.find("tr:nth-child(7)");
-    //   expect(tr.html()).toContain(TEST_DATA[3].status); 
-    // });
+    then("I should see a Status Column", () => {
+      for (let i = 1; i <= TEST_DATA.length; i++) {
+        let selector = `table tr:nth-child(${i}) td:nth-child(6)`;
+        let td = wrapper.find(selector);
+        expect(td.html()).toContain(TEST_DATA[i-1].status);
+      }
+    })
 
 //    then("I should see Action Combo boxes", () => {
 //      let select = wrapper.find("div.q-input-target.ellipsis.justify-start")[0];
