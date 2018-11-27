@@ -29,64 +29,64 @@ defineFeature(feature, test => {
 
   const TEST_DATA = [
     {
-        "id": 4,
-        "stix_id": "bundle--c9567f73-3803-415c-b06e-2b0622830e5d",
-        "field_name": "description",
-        "field_value": "This organized threat actor group operates to create profit from all types of crime.",
-        "field_location": "$.objects[0].description",
-        "original_date": "2018-11-21T10:29:14-05:00",
-        "modified_date": "2018-11-21T10:29:14-05:00",
-        "object_type": "objects",
-        "status": "New",
-        "action": ""
+      "id": 1,
+      "stix_id": "bundle--c9567f73-3803-415c-b06e-2b0622830e5d",
+      "field_name": "description",
+      "field_value": "This organized threat actor group operates to create profit from all types of crime.",
+      "field_location": "$.objects[0].description",
+      "original_date": "2018-11-21T10:29:14-05:00",
+      "modified_date": "2018-11-21T10:29:14-05:00",
+      "object_type": "objects",
+      "status": "New",
+      "action": ""
     },
     {
-        "id": 5,
-        "stix_id": "bundle--c9567f73-3803-415c-b06e-2b0622830e5d",
-        "field_name": "primary_motivation",
-        "field_value": "personal-gain",
-        "field_location": "$.objects[0].primary_motivation",
-        "original_date": "2018-11-21T10:29:14-05:00",
-        "modified_date": "2018-11-21T10:29:14-05:00",
-        "object_type": "objects",
-        "status": "Confirmed",
-        "action": "Confirm Risk"
+      "id": 2,
+      "stix_id": "bundle--c9567f73-3803-415c-b06e-2b0622830e5d",
+      "field_name": "primary_motivation",
+      "field_value": "personal-gain",
+      "field_location": "$.objects[0].primary_motivation",
+      "original_date": "2018-11-21T10:29:14-05:00",
+      "modified_date": "2018-11-21T10:29:14-05:00",
+      "object_type": "objects",
+      "status": "Confirmed",
+      "action": "Confirm Risk"
     },
     {
-        "id": 6,
-        "stix_id": "bundle--c9567f73-3803-415c-b06e-2b0622830e5d",
-        "field_name": "name",
-        "field_value": "Disco Team Threat Actor Group",
-        "field_location": "$.objects[0].name",
-        "original_date": "2018-11-21T10:29:14-05:00",
-        "modified_date": "2018-11-21T10:29:14-05:00",
-        "object_type": "objects",
-        "status": "Edited",
-        "action": "Confirm Risk"
+      "id": 3,
+      "stix_id": "bundle--c9567f73-3803-415c-b06e-2b0622830e5d",
+      "field_name": "name",
+      "field_value": "Disco Team Threat Actor Group",
+      "field_location": "$.objects[0].name",
+      "original_date": "2018-11-21T10:29:14-05:00",
+      "modified_date": "2018-11-21T10:29:14-05:00",
+      "object_type": "objects",
+      "status": "Edited",
+      "action": "Confirm Risk"
     },
     {
-        "id": 7,
-        "stix_id": "bundle--c9567f73-3803-415c-b06e-2b0622830e5d",
-        "field_name": "name",
-        "field_value": "Disco Team Threat Actor Group",
-        "field_location": "$.objects[1].name",
-        "original_date": "2018-11-21T10:40:16-05:00",
-        "modified_date": "2018-11-21T10:40:16-05:00",
-        "object_type": "objects",
-        "status": "Redacted",
-        "action": "Redact Field"
+      "id": 4,
+      "stix_id": "bundle--c9567f73-3803-415c-b06e-2b0622830e5d",
+      "field_name": "title",
+      "field_value": "Disco Team Threat Actor Group Title",
+      "field_location": "$.objects[1].title",
+      "original_date": "2018-11-21T10:40:16-05:00",
+      "modified_date": "2018-11-21T10:40:16-05:00",
+      "object_type": "objects",
+      "status": "Redacted",
+      "action": "Redact",
     },
     {
-        "id": 8,
-        "stix_id": "bundle--c9567f73-3803-415c-b06e-2b06228aae5d",
-        "field_name": "name",
-        "field_value": "Disco Team Threat Actor Group",
-        "field_location": "$.objects[1].name",
-        "original_date": "2018-11-21T10:40:16-05:00",
-        "modified_date": "2018-11-21T10:40:16-05:00",
-        "object_type": "objects",
-        "status": "Not PII",
-        "action": "Not PII"
+      "id": 5,
+      "stix_id": "bundle--c9567f73-3803-415c-b06e-2b06228aae5d",
+      "field_name": "name",
+      "field_value": "Disco Team Threat Actor Group",
+      "field_location": "$.objects[1].name",
+      "original_date": "2018-11-21T10:40:16-05:00",
+      "modified_date": "2018-11-21T10:40:16-05:00",
+      "object_type": "objects",
+      "status": "Not PII",
+      "action": "Not PII"
     }
  ];
 
@@ -105,7 +105,7 @@ defineFeature(feature, test => {
     });
   };
 
-  test("Displaying a table", ({ given, when, then }) => {
+  test("Rendering a table on page", ({ given, when, then }) => {
     let $axios = {};
     let $route = {};
 
@@ -137,7 +137,7 @@ defineFeature(feature, test => {
       });
     });
 
-    then("I should see a Stix Id Column", () => {
+    then("I should inspect the Stix Id Column", () => {
       for (let i = 1; i <= TEST_DATA.length; i++) {
         let selector = `table tr:nth-child(${i}) td:nth-child(1)`;
         let td = wrapper.find(selector);
@@ -145,7 +145,7 @@ defineFeature(feature, test => {
       }
     });
 
-    then("I should see an Original Date Column", () => {
+    then("I should inspect the Original Date Column", () => {
       for (let i = 1; i <= TEST_DATA.length; i++) {
         let selector = `table tr:nth-child(${i}) td:nth-child(2)`;
         let td = wrapper.find(selector);
@@ -153,7 +153,7 @@ defineFeature(feature, test => {
       }
     });
 
-    then("I should see a Type Column", () => {
+    then("I should inspect the Type Column", () => {
       for (let i = 1; i <= TEST_DATA.length; i++) {
         let selector = `table tr:nth-child(${i}) td:nth-child(3)`;
         let td = wrapper.find(selector);
@@ -161,7 +161,7 @@ defineFeature(feature, test => {
       }
     });
 
-    then("I should see a Field Column", () => {
+    then("I should inspect the Field Column", () => {
       for (let i = 1; i <= TEST_DATA.length; i++) {
         let selector = `table tr:nth-child(${i}) td:nth-child(4)`;
         let td = wrapper.find(selector);
@@ -169,7 +169,7 @@ defineFeature(feature, test => {
       }
     });
 
-    then("I should see a Value Column", () => {
+    then("I should inspect the Value Column", () => {
       for (let i = 1; i <= TEST_DATA.length; i++) {
         let selector = `table tr:nth-child(${i}) td:nth-child(5)`;
         let td = wrapper.find(selector);
@@ -177,7 +177,7 @@ defineFeature(feature, test => {
       }
     });
 
-    then("I should see a Status Column", () => {
+    then("I should inspect the Status Column", () => {
       for (let i = 1; i <= TEST_DATA.length; i++) {
         let selector = `table tr:nth-child(${i}) td:nth-child(6)`;
         let td = wrapper.find(selector);
@@ -185,22 +185,14 @@ defineFeature(feature, test => {
       }
     })
 
-//    then("I should see Action Combo boxes", () => {
-//      let select = wrapper.find("div.q-input-target.ellipsis.justify-start")[0];
-//      expect(select.html()).toContain(TEST_DATA[0].action);
-//      select = wrapper.find("div.q-input-target.ellipsis")[1];
-//      expect(select.html()).toContain("Redact Field");
-//      select = wrapper.find("div.q-input-target.ellipsis(3)");
-//      expect(select.html()).toContain("Redact Field");
-//      select = wrapper.find("div.q-input-target.ellipsis(4)");
-//      expect(select.html()).toContain("Redact Field");
-//      select = wrapper.find("div.q-input-target.ellipsis(5)");
-//      expect(select.html()).toContain("Redact Field");
-//      select = wrapper.find("div.q-input-target.ellipsis(6)");
-//      expect(select.html()).toContain("Redact Field");
-//      select = wrapper.find("div.q-input-target.ellipsis(7)");
-//      expect(select.html()).toContain("Redact Field");
-//    });
+    then("I should inspect the Action Combo boxes", () => {
+      for (let i = 0; i < TEST_DATA.length; i++) {
+        let selector = "div.col.q-input-target.ellipsis.justify-start";
+        let item = wrapper.findAll(selector).at(i);
+        expect(item).toBeDefined();
+        expect(item.html()).toContain(TEST_DATA[i].action);
+      }
+    });
   });
 
   // test("Modify the value of a table item with an action", ({ given, when, then }) => {

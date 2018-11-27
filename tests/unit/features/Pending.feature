@@ -1,15 +1,15 @@
 Feature: Pending Table Component
 
-Scenario: Displaying a table
+Scenario: Rendering a table on page
   Given a mock instance of Axios and Vue Router
   When  I render the table component
-  Then  I should see a Stix Id Column
-  And   I should see an Original Date Column
-  And   I should see a Type Column
-  And   I should see a Field Column
-  And   I should see a Value Column
-  And   I should see a Status Column
-# And   I should see Action Combo boxes
+  Then  I should inspect the Stix Id Column
+  And   I should inspect the Original Date Column
+  And   I should inspect the Type Column
+  And   I should inspect the Field Column
+  And   I should inspect the Value Column
+  And   I should inspect the Status Column
+  And   I should inspect the Action Combo boxes
 
 # Scenario: Modify the value of a table item with an action
 #   Given data for a table
