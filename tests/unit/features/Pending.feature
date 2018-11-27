@@ -11,13 +11,9 @@ Scenario: Rendering a table on page
   And   I should inspect the Status Column
   And   I should inspect the Action Combo boxes
 
-# Scenario: Modify the value of a table item with an action
-#   Given data for a table
-#   When  I render the table component
-#   And   I select a table value
-#   And   I change a table value
-#   And   I click Set
-#   Then  the underlying table value should be updated with an action
+Scenario: Render the Confirm Risk action
+  Given a mock instance of Axios and Vue Router
+  Then  I render a Confirm Risk action
 
 # Scenario: Modify the value of a table item with a group action
 #   Given data for a table

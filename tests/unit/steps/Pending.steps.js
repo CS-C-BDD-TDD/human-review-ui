@@ -195,18 +195,37 @@ defineFeature(feature, test => {
     });
   });
 
-  // test("Modify the value of a table item with an action", ({ given, when, then }) => {
-  //   /**
-  //    * Load our Default layout into the Vue rendering engine
-  //    */
-  //   givenIHaveDataForATable(given);
+  test("Render the Confirm Risk action", ({ given, when, then }) => {
+    let $axios = {};
+    let $route = {};
 
-  //   whenIRendertheTableComponent(when);
+    given(/^a mock instance of Axios and Vue Router$/, () => {
+      $axios.get = jest.fn((url, config) => {
+        expect(url).toEqual('/api/v1/humanreview/pending');
+        expect(config.headers.token).toEqual(TEST_API_TOKEN);
+        expect(config.headers['Content-Type']).toEqual('application/json');
+          let response = {
+          // 'data' is the response that was provided by the server
+          data: TEST_DATA,
+          // 'status' is the HTTP status code from the server response
+          status: 200,
+          // 'statusText' is the HTTP status message from the server response
+          statusText: 'OK'
+        };
+        return Promise.resolve(response);
+      });
 
-  //   when("I select a table value", () => {
-  //     const valueField = wrapper.find("td.cursor-pointer");
-  //     valueField.trigger("click");
-  //   });
+      $route.params = {token: TEST_API_TOKEN};
+    });
+  
+    when("I render a Confirm Risk action", () => {
+      wrapper = mount(pending, {localVue,
+        mocks: {    // Implement the mocks here!
+          $axios,
+          $route
+        }
+      });
+    });
 
   //   when("I change a table value", () => {
   //     const inputField = wrapper.find("input.q-input-target.q-no-input-spinner.ellipsis");
@@ -257,5 +276,5 @@ defineFeature(feature, test => {
   //     expect(wrapper.emitted("fieldValueUpdate").length).toEqual(1);
   //     expect(wrapper.emitted("fieldValueUpdate")[0][0]).toEqual(eventData);
   //   });
-  // });
+  });
 });
