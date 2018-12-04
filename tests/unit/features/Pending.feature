@@ -11,18 +11,15 @@ Scenario: Rendering a table on page
   And   I should inspect the Status Column
   And   I should inspect the Action Combo boxes
 
-# Scenario: Modify the value of a table item with an action
-#   Given data for a table
-#   When  I render the table component
-#   And   I select a table value
-#   And   I change a table value
-#   And   I click Set
-#   Then  the underlying table value should be updated with an action
-
-# Scenario: Modify the value of a table item with a group action
-#   Given data for a table
-#   When  I render the table component
-#   And   I select a table value
-#   And   I change a table value
-#   And   I click Set
-#   Then  the underlying table value should be updated with a group action  
+ Scenario Outline: Performing an action
+  Given a mock instance of Axios and Vue Router
+  And   a mock instance of Axios put
+  When  I render the table component
+  Then  I select an <Action>
+  Then  I verify updateValues
+  Examples:
+  | Action       |
+  | Confirm Risk |
+  | Not PII      |
+  | Redact       |
+  | Edit         |

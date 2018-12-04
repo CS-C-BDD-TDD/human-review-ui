@@ -3,6 +3,7 @@ import { defineFeature, loadFeature } from "jest-cucumber";
 import Quasar from "quasar-framework";
 import { mount, createLocalVue } from "@vue/test-utils";
 import pending from "@/views/Pending.vue";
+import  { updateValues } from "@/views/Pending.vue"
 import iconSet from "quasar-framework/icons/fontawesome";
 import "quasar-extras/fontawesome";
 
@@ -11,10 +12,10 @@ Vue.config.silent = true;
 const feature = loadFeature("tests/unit/features/Pending.feature");
 const TEST_VALUE_INPUT = "This is my test value";
 const TEST_API_TOKEN = 'Random-0.7354678706053357';
+const TEST_OPTIONS = ['Confirm Risk', 'Not PII', 'Redact'];
 
 defineFeature(feature, test => {
   let localVue;
-  let propData;
   let wrapper;
   /**
    * Initialize the Vue.js rendering engine with Quasar and font-awesome
@@ -89,21 +90,6 @@ defineFeature(feature, test => {
       "action": "Not PII"
     }
  ];
-
-  const givenIHaveDataForATable = given => {
-    given("data for a table", () => {
-      propData = TEST_DATA;
-    });
-  };
-
-  /**
-   * There really is not operation here, but we need a `when` clause
-   */
-  const whenIRendertheTableComponent = when => {
-    when("I render the table component", () => {
-      wrapper = mount(pending, { propsData: propData });
-    });
-  };
 
   test("Rendering a table on page", ({ given, when, then }) => {
     let $axios = {};
@@ -193,69 +179,78 @@ defineFeature(feature, test => {
         expect(item.html()).toContain(TEST_DATA[i].action);
       }
     });
-  });
+   });
 
-  // test("Modify the value of a table item with an action", ({ given, when, then }) => {
-  //   /**
-  //    * Load our Default layout into the Vue rendering engine
-  //    */
-  //   givenIHaveDataForATable(given);
+  test("Performing an action", ({ given, when, then }) => {
+    let $axios = {};
+    let $route = {};
+    let action = "";
+    let newValues = {
+      stix_id: TEST_DATA[0].stix_id,
+      field_location: TEST_DATA[0].field_location,
+      field_name: TEST_DATA[0].field_name,
+      original_value: TEST_DATA[0].field_value,
+      accepted_value: TEST_DATA[0].field_value,
+      action_type: action
+    };
 
-  //   whenIRendertheTableComponent(when);
+    given(/^a mock instance of Axios and Vue Router$/, () => {
+      $axios.get = jest.fn((url, config) => {
+        expect(url).toEqual('/api/v1/humanreview/pending');
+        expect(config.headers.token).toEqual(TEST_API_TOKEN);
+        expect(config.headers['Content-Type']).toEqual('application/json');
+        let response = {
+          // 'data' is the response that was provided by the server
+          data: TEST_DATA,
+          // 'status' is the HTTP status code from the server response
+          status: 200,
+          // 'statusText' is the HTTP status message from the server response
+          statusText: 'OK'
+        };
+        return Promise.resolve(response);
+      });
 
-  //   when("I select a table value", () => {
-  //     const valueField = wrapper.find("td.cursor-pointer");
-  //     valueField.trigger("click");
-  //   });
+      $route.params = {token: TEST_API_TOKEN};
+    });
 
-  //   when("I change a table value", () => {
-  //     const inputField = wrapper.find("input.q-input-target.q-no-input-spinner.ellipsis");
-  //     inputField.setValue(TEST_VALUE_INPUT);
-  //   });
+     given(/^a mock instance of Axios put$/, () => {
 
-  //   when(/^I click Set$/, () => {
-  //     const setButton = wrapper.find("button.q-btn:nth-child(2)");
-  //     setButton.trigger("click");
-  //   });
+      $axios.put = jest.fn((url, requestBody, config) => {
+        expect(url).toEqual('/api/v1/humanreview/'
+          + TEST_DATA[0].stix_id + '/' + TEST_DATA[0].field_name);
+        expect(config.headers.token).toEqual(TEST_API_TOKEN);
+        expect(config.headers['Content-Type'])
+          .toEqual('application/x-www-form-urlencoded');
+        let response = {
+          // 'data' is the response that was provided by the server
+          // 'status' is the HTTP status code from the server response
+          status: 200,
+          // 'statusText' is the HTTP status message from the server response
+          statusText: 'OK'
+        };
+        return Promise.resolve(response);
+      });
 
-  //   then("the underlying table value should be updated with an action", () => {
-  //     let eventData = TEST_DATA;
-  //     eventData.fieldValue = TEST_VALUE_INPUT;
-  //     expect(wrapper.emitted("fieldValueUpdate")).toBeDefined();
-  //     expect(wrapper.emitted("fieldValueUpdate").length).toEqual(1);
-  //     expect(wrapper.emitted("fieldValueUpdate")[0][0]).toEqual(eventData);
-  //   });
-  // });
+      $route.params = {token: TEST_API_TOKEN};
+    });
 
-  // test("Modify the value of a table item with a group action", ({ given, when, then }) => {
-  //   /**
-  //    * Load our Default layout into the Vue rendering engine
-  //    */
-  //   givenIHaveDataForATable(given);
+    when("I render the table component", () => {
+      wrapper = mount(pending, {localVue,
+        mocks: {    // Implement the mocks here!
+          $axios,
+          $route,
+        }
+      });
+    });
 
-  //   whenIRendertheTableComponent(when);
+    then(/^I select an (.*)$/, action => {
+      newValues.action = action;
+    });
 
-  //   when("I select a table value", () => {
-  //     const valueField = wrapper.find("td.cursor-pointer");
-  //     valueField.trigger("click");
-  //   });
-
-  //   when("I change a table value", () => {
-  //     const inputField = wrapper.find("input.q-input-target.q-no-input-spinner.ellipsis");
-  //     inputField.setValue(TEST_VALUE_INPUT);
-  //   });
-
-  //   when(/^I click Set$/, () => {
-  //     const setButton = wrapper.find("button.q-btn:nth-child(2)");
-  //     setButton.trigger("click");
-  //   });
-
-  //   then("the underlying table value should be updated with a group action", () => {
-  //     let eventData = TEST_DATA;
-  //     eventData.fieldValue = TEST_VALUE_INPUT;
-  //     expect(wrapper.emitted("fieldValueUpdate")).toBeDefined();
-  //     expect(wrapper.emitted("fieldValueUpdate").length).toEqual(1);
-  //     expect(wrapper.emitted("fieldValueUpdate")[0][0]).toEqual(eventData);
-  //   });
-  // });
+    then("I verify updateValues", () => {
+      expect(wrapper.vm.updateValues(newValues, action)).toBeDefined;
+      expect($axios.put).toHaveBeenCalled();
+      expect($axios.put).toHaveBeenCalledTimes(1);
+    });
+   });
 });
