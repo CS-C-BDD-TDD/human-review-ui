@@ -24,3 +24,13 @@ Scenario: Rendering a table on page
     | Redact       |
     | Edit         |
 
+ Scenario Outline: Performing a group action
+  Given a mock instance of Axios get and Vue Router
+  And   another mock instance of Axios put
+  When  I render the pending component
+  Then  I select a <Group Action>
+  Then  I submit <Group Action>
+  Examples:
+    | Group Action       |
+    | Disseminate        |
+    | Do Not Disseminate |

@@ -75,7 +75,8 @@ const TEST_DATA = [
     "action": "Not PII"
   }
 ];
-const TEST_PUT_URL = '/api/v1/humanreview/' + TEST_DATA[0].stix_id + '/' + TEST_DATA[0].field_name;
+const TEST_PUT_ACTION_URL = '/api/v1/humanreview/' + TEST_DATA[0].stix_id + '/' + TEST_DATA[0].field_name;
+const TEST_PUT_G_ACTION_URL = '/api/v1/humanreview/' + TEST_DATA[0].stix_id;
 const TEST_CONFIG = {
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded',
@@ -97,6 +98,10 @@ defineFeature(feature, test => {
       config: {},
       iconSet: iconSet
     });
+  });
+
+  afterEach(() => {
+    $axios.get.mockReset();
   });
 
   const givenAMockInstanceOfAxiosGetAndVueRouter = given => {
@@ -248,7 +253,54 @@ defineFeature(feature, test => {
 
       expect($axios.put).toHaveBeenCalled();
       expect($axios.put).toHaveBeenCalledTimes(1);
-      expect($axios.put.mock.calls[0][0]).toEqual(TEST_PUT_URL);
+      expect($axios.put.mock.calls[0][0]).toEqual(TEST_PUT_ACTION_URL);
+      expect($axios.put.mock.calls[0][2].headers.token).toEqual(TEST_CONFIG.headers.token);
+      expect($axios.put.mock.calls[0][2].headers['Content-Type']).toEqual('application/x-www-form-urlencoded');
+    });
+   });
+
+   test("Performing a group action", ({ given, when, then }) => {
+
+    let actionType = "";
+
+    givenAMockInstanceOfAxiosGetAndVueRouter(given);
+
+    given(/^another mock instance of Axios put$/, () => {
+      $axios.put = jest.fn((url, data, config) => {
+        expect(url).toEqual('/api/v1/humanreview/' + TEST_DATA[0].stix_id);
+        expect(data).toBe(null);
+        expect(config.headers.token).toEqual(TEST_API_TOKEN);
+        expect(config.headers['Content-Type'])
+          .toEqual('application/x-www-form-urlencoded');
+
+        expect(config.params.stix_id).toEqual(TEST_DATA[0].stix_id);
+        expect(config.params.group_action).toEqual(actionType);
+
+        let response = {
+          // 'data' is the response that was provided by the server
+          // 'status' is the HTTP status code from the server response
+          status: 200,
+          // 'statusText' is the HTTP status message from the server response
+          statusText: 'OK'
+        };
+        return Promise.resolve(response);
+      });
+
+      $route.params = {token: TEST_API_TOKEN};
+    });
+
+    whenIRenderthePendingComponent(when);
+
+    then(/^I select a (.*)$/, action => {
+      actionType = action;
+    });
+
+    then(/^I submit (.*)$/, action => {
+      expect(wrapper.vm.performGroupAction(TEST_DATA[0].stix_id, actionType)).toBeDefined;
+
+      expect($axios.put).toHaveBeenCalled();
+      expect($axios.put).toHaveBeenCalledTimes(1);
+      expect($axios.put.mock.calls[0][0]).toEqual(TEST_PUT_G_ACTION_URL);
       expect($axios.put.mock.calls[0][2].headers.token).toEqual(TEST_CONFIG.headers.token);
       expect($axios.put.mock.calls[0][2].headers['Content-Type']).toEqual('application/x-www-form-urlencoded');
     });
