@@ -1,8 +1,8 @@
-Feature: Pending Table Component
+Feature: Pending Component
 
 Scenario: Rendering a table on page
-  Given a mock instance of Axios and Vue Router
-  When  I render the table component
+  Given a mock instance of Axios get and Vue Router
+  When  I render the pending component
   Then  I should inspect the Stix Id Column
   And   I should inspect the Original Date Column
   And   I should inspect the Type Column
@@ -14,9 +14,9 @@ Scenario: Rendering a table on page
  Scenario Outline: Performing an action
   Given a mock instance of Axios get and Vue Router
   And   a mock instance of Axios put
-  When  I render the table component
+  When  I render the pending component
   Then  I select an <Action>
-  Then  I update values
+  Then  I update the values
   Examples:
     | Action       |
     | Confirm Risk |

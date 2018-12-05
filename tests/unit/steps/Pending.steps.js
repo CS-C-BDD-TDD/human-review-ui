@@ -86,6 +86,8 @@ const TEST_CONFIG = {
 defineFeature(feature, test => {
   let localVue;
   let wrapper;
+  let $axios = {};
+  let $route = {};
   /**
    * Initialize the Vue.js rendering engine with Quasar and font-awesome
    */
@@ -97,11 +99,8 @@ defineFeature(feature, test => {
     });
   });
 
-  test("Rendering a table on page", ({ given, when, then }) => {
-    let $axios = {};
-    let $route = {};
-
-    given(/^a mock instance of Axios and Vue Router$/, () => {
+  const givenAMockInstanceOfAxiosGetAndVueRouter = given => {
+    given(/^a mock instance of Axios get and Vue Router$/, () => {
       $axios.get = jest.fn((url, config) => {
         expect(url).toEqual('/api/v1/humanreview/pending');
         expect(config.headers.token).toEqual(TEST_API_TOKEN);
@@ -119,8 +118,10 @@ defineFeature(feature, test => {
 
       $route.params = {token: TEST_API_TOKEN};
     });
+  }
 
-    when("I render the table component", () => {
+  const whenIRenderthePendingComponent = when => {
+    when("I render the pending component", () => {
       wrapper = mount(pending, {localVue,
         mocks: {    // Implement the mocks here!
           $axios,
@@ -128,6 +129,13 @@ defineFeature(feature, test => {
         }
       });
     });
+  };
+
+  test("Rendering a table on page", ({ given, when, then }) => {
+
+    givenAMockInstanceOfAxiosGetAndVueRouter(given);
+
+    whenIRenderthePendingComponent(when);
 
     then("I should inspect the Stix Id Column", () => {
       for (let i = 1; i <= TEST_DATA.length; i++) {
@@ -188,8 +196,7 @@ defineFeature(feature, test => {
    });
 
   test("Performing an action", ({ given, when, then }) => {
-    let $axios = {};
-    let $route = {};
+
     let actionType = "";
     let newValues = {
       stix_id: TEST_DATA[0].stix_id,
@@ -199,24 +206,7 @@ defineFeature(feature, test => {
       action_type: actionType
     };
 
-    given(/^a mock instance of Axios get and Vue Router$/, () => {
-      $axios.get = jest.fn((url, config) => {
-        expect(url).toEqual('/api/v1/humanreview/pending');
-        expect(config.headers.token).toEqual(TEST_API_TOKEN);
-        expect(config.headers['Content-Type']).toEqual('application/json');
-        let response = {
-          // 'data' is the response that was provided by the server
-          data: TEST_DATA,
-          // 'status' is the HTTP status code from the server response
-          status: 200,
-          // 'statusText' is the HTTP status message from the server response
-          statusText: 'OK'
-        };
-        return Promise.resolve(response);
-      });
-
-      $route.params = {token: TEST_API_TOKEN};
-    });
+    givenAMockInstanceOfAxiosGetAndVueRouter(given);
 
     given(/^a mock instance of Axios put$/, () => {
       $axios.put = jest.fn((url, data, config) => {
@@ -246,21 +236,14 @@ defineFeature(feature, test => {
       $route.params = {token: TEST_API_TOKEN};
     });
 
-    when("I render the table component", () => {
-      wrapper = mount(pending, {localVue,
-        mocks: {    // Implement the mocks here!
-          $axios,
-          $route,
-        }
-      });
-    });
+    whenIRenderthePendingComponent(when);
 
     then(/^I select an (.*)$/, action => {
       actionType = action;
       newValues.action = action;
     });
 
-    then("I update values", () => {
+    then("I update the values", () => {
       expect(wrapper.vm.updateValues(newValues, actionType)).toBeDefined;
 
       expect($axios.put).toHaveBeenCalled();
