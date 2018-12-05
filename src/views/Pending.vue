@@ -112,9 +112,11 @@ export default {
       };
 
       const qs = require('qs');
+
 /*       console.log('######## updateValues ########');
       console.log('url = ', url);
       console.log(config); */
+
       this.$axios.put(url, qs.stringify(requestBody), config)
         .then((response) => {
           if (response.status === 200 || response.status === 202) {
