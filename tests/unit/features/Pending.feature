@@ -12,14 +12,15 @@ Scenario: Rendering a table on page
   And   I should inspect the Action Combo boxes
 
  Scenario Outline: Performing an action
-  Given a mock instance of Axios and Vue Router
+  Given a mock instance of Axios get and Vue Router
   And   a mock instance of Axios put
   When  I render the table component
   Then  I select an <Action>
-  Then  I verify updateValues
+  Then  I update values
   Examples:
-  | Action       |
-  | Confirm Risk |
-  | Not PII      |
-  | Redact       |
-  | Edit         |
+    | Action       |
+    | Confirm Risk |
+    | Not PII      |
+    | Redact       |
+    | Edit         |
+
