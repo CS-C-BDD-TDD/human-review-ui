@@ -7,6 +7,12 @@
      row-key="id"
      class="bg-white"
    >
+   <q-alert color="red" v-if="failed_comm_backend">
+     Error communicating with backend.
+   </q-alert>
+   <q-alert color="orange" v-if="no_success_comm_backend">
+     No success communicating with backend.
+   </q-alert>
    <q-tr slot="body" slot-scope="props" :props="props" >
      <q-td key="id" :props="props">{{ props.row.id }}</q-td>
      <q-td key="stixid" :props="props"
@@ -25,14 +31,28 @@
      </q-td>
      <q-td key="status" :props="props">{{ props.row.status }}</q-td>
      <q-td key="action" :props="props">
+      <q-alert color="red" 
+       v-if="failed_action == true && (props.row.action == 'Confirm Risk' || props.row.action == 'Not PII' || props.row.action == 'Redact')">
+        Action Error communicating with backend.
+      </q-alert>
+      <q-alert color="orange" 
+       v-if="no_success_action == true && (props.row.action == 'Confirm Risk' || props.row.action == 'Not PII' || props.row.action == 'Redact')">
+        Action not successful.
+      </q-alert>
       <q-select v-model="props.row.action" float-label="Select Action" :options="selectOptions"
         @input="updateValues(props.row, props.row.action)"/>
      </q-td>
      <q-td key="groupaction" :props="props">
-      <q-btn class="q-ma-sm" color="primary" label="Disseminate" size="10px"
-        @click="performGroupAction(props.row.stix_id, 'Disseminate')"/>
-      <q-btn class="q-ma-sm" color="primary" label="Do Not Disseminate" size="10px"
-        @click="performGroupAction(props.row.stix_id, 'Do Not Disseminate')"/>
+      <q-alert color="red" 
+       v-if="failed_group_action == true  && (props.row.groupaction == 'Disseminate') || (props.row.groupaction == 'Do Not Disseminate')">
+        Group Action Error communicating with backend.
+      </q-alert>
+      <q-alert color="orange" 
+       v-if="no_success_group_action == true && (props.row.groupaction == 'Disseminate') || (props.row.groupaction == 'Do Not Disseminate')">
+        Group Action not successful.
+      </q-alert> 
+      <q-select v-model="props.row.groupaction" float-label="Disseminate Options" :options="disseminateOptions"
+        @input="performGroupAction(props.row.stix_id, props.row.groupaction)"/>
      </q-td>
    </q-tr>
    </q-table>
@@ -62,7 +82,20 @@ export default {
       { label: 'Not PII', value: 'Not PII' },
       { label: 'Redact Field', value: 'Redact' },
     ],
+    disseminateOptions: [
+      { label: 'Disseminate', value: 'Disseminate' },
+      { label: 'Do Not Disseminate', value: 'Do Not Disseminate' },
+    ],
+
     pendingList: [],
+     
+    no_success_group_action: false,
+    no_success_action: false,
+    no_success_comm_backend: false,
+    failed_group_action: false,
+    failed_action: false,
+    failed_comm_backend: false,
+
     originalReviewItemData: [],
   }),
 
@@ -71,7 +104,8 @@ export default {
   },
 
   methods: {
-    getPendingList: function () {
+
+    getPendingList:  function () {
       const url = '/api/v1/humanreview/pending';
       const token = this.$route.params.token;
       const config = {
@@ -88,8 +122,18 @@ export default {
         .then((response) => {
           this.pendingList = response.data;
           this.originalReviewItemData = this.pendingList;
+          this.failed_comm_backend = false;
           console.log('######## Size of Pending List: ', this.pendingList.length, ' #######');
+          if (response.status === 200 || response.status === 202) {
+            this.no_success_comm_backend = false;
+          } else {
+            /* MFF 01/04/19:  Added No Success Action Error Message flag */
+            this.no_success_comm_backend = true;
+            console.log(response);
+          }
         }).catch((error) => {
+          /* MFF 12/06/18:  Added Error Message */
+          this.failed_comm_backend = true;
           console.log(error);
         });
     },
@@ -121,10 +165,16 @@ export default {
         .then((response) => {
           if (response.status === 200 || response.status === 202) {
             this.getPendingList();
+            this.no_success_action = false;
+            this.failed_action = false;
           } else {
+            /* MFF 12/06/18:  Added No Success Action Error Message flag */
+            this.no_success_action = true;
             console.log(response);
           }
         }).catch((error) => {
+          /* MFF 12/06/18:  Added Action Error Message flag */
+          this.failed_action = true;
           console.log('Failed update...');
           console.log(error);
         });
@@ -152,13 +202,19 @@ export default {
           if (response.status === 200 || response.status === 202) {
             console.log('GroupAction success!');
             this.getPendingList();
+            this.no_success_group_action = false;
+            this.failed_group_action = false;
           } else {
+            /* MFF 12/07/18:  Added No Success Group Action Message flag */
+            this.no_success_group_action = true;
             console.log('GroupAction: other than success', response);
           }
         }).catch((error) => {
+          /* MFF 12/07/18:  Added Group Action Error Message flag */
+          this.failed_group_action = true;
           console.error('GroupAction failed.');
           console.error(error);
-        });
+        }); 
     },
   },
 };
